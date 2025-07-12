@@ -23,7 +23,7 @@ class CoinListViewModel @Inject constructor(
         getCoins()
     }
 
-    private fun getCoins(){
+    fun getCoins(){
         getCoinsUseCase().onEach { result ->
             when(result){
                 is Resource.Success -> {

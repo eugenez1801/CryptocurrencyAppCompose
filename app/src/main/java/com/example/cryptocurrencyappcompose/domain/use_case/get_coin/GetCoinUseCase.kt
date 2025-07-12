@@ -1,4 +1,4 @@
-package com.example.cryptocurrencyappcompose.domain.use_case.get_coins
+package com.example.cryptocurrencyappcompose.domain.use_case.get_coin
 
 import com.example.cryptocurrencyappcompose.common.Resource
 import com.example.cryptocurrencyappcompose.data.remote.dto.toCoinDetail

@@ -32,4 +32,9 @@ class GetCoinsUseCase @Inject constructor(
             it.toCoin()
         }
     }
+
+    /*private fun coinDtoToCoin(listDto: List<CoinDto>): List<Coin>{ была нужна для исправления null у tag
+        val holorideCoin = listDto.find { it.symbol == "RIDE" }
+        return listOf(holorideCoin!!.toCoin())
+    }*/
 }
