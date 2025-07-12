@@ -38,6 +38,7 @@ class CoinDetailViewModel @Inject constructor(
                     _state.value = CoinDetailState(
                         coin = result.data
                     )
+//                    Log.d("LogoCheck", state.value.toString())
                 }
                 is Resource.Error -> {
                     _state.value = CoinDetailState(
