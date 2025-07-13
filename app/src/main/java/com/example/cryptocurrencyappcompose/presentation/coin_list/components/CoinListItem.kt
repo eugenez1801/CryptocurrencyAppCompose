@@ -25,7 +25,7 @@ fun CoinListItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onItemClick(coin) }
-            .padding(20.dp)
+            .padding(start = 20.dp, end = 20.dp, bottom = 30.dp)
     ) {
         Text(
             text = "${coin.rank}. ${coin.name} (${coin.symbol})",

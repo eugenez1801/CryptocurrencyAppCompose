@@ -13,29 +13,36 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cryptocurrencyappcompose.common.SearchType
+import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListViewModel
 import com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.search_dialog.components.DefaultRadioButton
 
 @Composable
 fun SearchDialog(
     showAlertDialog: MutableState<Boolean>,
-    onConfirmation: (SearchType, String) -> Unit
+    onConfirmation: (SearchType, String) -> Unit,
+    viewModel: CoinListViewModel = viewModel()
 ) {
-    var text by remember { mutableStateOf("") }
+    val text = viewModel.textInTextFieldState.value
 
-    val currentSearchType = remember { mutableStateOf(SearchType.NAME) }
+    val currentSearchType = viewModel.currentSearchTypeState.value
 
-    val focusRequester = remember { FocusRequester() }//для установки фокуса на текстФилд
+    val focusRequester = viewModel.focusRequesterState//для установки фокуса на текстФилд
+
+    /*if (showAlertDialog.value) { это работает благодаря delay, но как то ненадежно, не хочу так
+        LaunchedEffect(showAlertDialog.value) {
+            // Ждем следующего кадра, чтобы TextField успел привязаться к FocusRequester
+            delay(50) // Минимальная задержка (можно убрать, если не помогает)
+            focusRequester.requestFocus()
+        }
+    }*/
 
     LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(5)//все же нужен этот костыль
         focusRequester.requestFocus()
     }
 
@@ -53,16 +60,16 @@ fun SearchDialog(
                 ) {
                     DefaultRadioButton(
                         text = "Name",
-                        selected = currentSearchType.value == SearchType.NAME
+                        selected = currentSearchType == SearchType.NAME
                     ) {
-                        currentSearchType.value = SearchType.NAME
+                        viewModel.updateDialogsState(searchType = SearchType.NAME)
                     }
 
                     DefaultRadioButton(
                         text = "Symbol",
-                        selected = currentSearchType.value == SearchType.SYMBOL
+                        selected = currentSearchType == SearchType.SYMBOL
                     ) {
-                        currentSearchType.value = SearchType.SYMBOL
+                        viewModel.updateDialogsState(searchType = SearchType.SYMBOL)
                     }
                 }
 
@@ -71,7 +78,7 @@ fun SearchDialog(
                 TextField(
                     value = text,
                     onValueChange = { newText ->
-                        text = newText
+                        viewModel.updateDialogsState(newText)
                     },
                     modifier = Modifier.focusRequester(focusRequester)
                 )
@@ -79,12 +86,14 @@ fun SearchDialog(
         },
         onDismissRequest = {
             showAlertDialog.value = false
+            viewModel.updateDialogsState("")
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    onConfirmation(currentSearchType.value, text)
+                    onConfirmation(currentSearchType, text.trim())
                     showAlertDialog.value = false
+                    viewModel.updateDialogsState("")
                 }
             ) {
                 Text("Confirm")
@@ -94,6 +103,7 @@ fun SearchDialog(
             TextButton(
                 onClick = {
                     showAlertDialog.value = false
+                    viewModel.updateDialogsState("")
                 }
             ) {
                 Text("Cancel")

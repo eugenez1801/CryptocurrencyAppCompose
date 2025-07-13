@@ -60,12 +60,13 @@ class GetCoinsUseCase @Inject constructor(
         val startWithList: MutableList<CoinDto> = mutableListOf()//список для коинов, начинающихся с этих букв
         val filteredList: MutableList<CoinDto> = mutableListOf()
         var accurateCoin: CoinDto? = null //для точного попадания
-        val lowerStringForSearch = stringForSearch.lowercase()
+        var lowerStringForSearch = stringForSearch.lowercase().trim()//нижнее не учитывает пробелы в начале
+//        if (lowerStringForSearch.last() == ' ') lowerStringForSearch = lowerStringForSearch.dropLast(1)
 
         when(typeOfSearchType){
             SearchType.NAME -> listDto.forEach { coinDto ->
                 val coinName = coinDto.name.lowercase()
-                if (coinName == lowerStringForSearch) accurateCoin = coinDto
+                if (coinName == lowerStringForSearch && accurateCoin == null) accurateCoin = coinDto
                 else if (coinName.startsWith(lowerStringForSearch))
                     startWithList.add(coinDto)
                 else if (lowerStringForSearch in coinName)
@@ -73,7 +74,7 @@ class GetCoinsUseCase @Inject constructor(
             }
             SearchType.SYMBOL -> listDto.forEach { coinDto ->
                 val coinSymbol = coinDto.symbol.lowercase()
-                if (coinSymbol == lowerStringForSearch) accurateCoin = coinDto
+                if (coinSymbol == lowerStringForSearch && accurateCoin == null) accurateCoin = coinDto
                 else if (coinSymbol.startsWith(lowerStringForSearch))
                     startWithList.add(coinDto)
                 else if (lowerStringForSearch in coinSymbol)
