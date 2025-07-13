@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import com.example.cryptocurrencyappcompose.presentation.coin_detail.components.CoinTag
 import com.example.cryptocurrencyappcompose.presentation.coin_detail.components.TeamListItem
 
@@ -69,12 +69,16 @@ fun CoinDetailScreen(
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ){
-                        AsyncImage(
+                        SubcomposeAsyncImage(
+                            loading = {
+                                CircularProgressIndicator()
+                            },
                             model = coin.logo,
                             contentDescription = "logo",
                             modifier = Modifier
                                 .size(128.dp)
-                                .align(Alignment.Center),
+                                .align(Alignment.Center)
+                                /*.background(Color.White)все таки лучше без него*/,
                             contentScale = ContentScale.Crop
                         )
                     }
