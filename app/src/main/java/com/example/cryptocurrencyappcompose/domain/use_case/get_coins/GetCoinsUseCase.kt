@@ -1,6 +1,5 @@
 package com.example.cryptocurrencyappcompose.domain.use_case.get_coins
 
-import android.util.Log
 import com.example.cryptocurrencyappcompose.common.Resource
 import com.example.cryptocurrencyappcompose.common.SearchType
 import com.example.cryptocurrencyappcompose.data.remote.dto.CoinDto
@@ -39,6 +38,8 @@ class GetCoinsUseCase @Inject constructor(
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException){
             emit(Resource.Error("Could't reach server. Check your internet connection"))
+        } catch (e: ResultListException){
+            emit(Resource.Error(e.message!!))
         }
     }
 
@@ -60,7 +61,7 @@ class GetCoinsUseCase @Inject constructor(
         val startWithList: MutableList<CoinDto> = mutableListOf()//список для коинов, начинающихся с этих букв
         val filteredList: MutableList<CoinDto> = mutableListOf()
         var accurateCoin: CoinDto? = null //для точного попадания
-        var lowerStringForSearch = stringForSearch.lowercase().trim()//нижнее не учитывает пробелы в начале
+        val lowerStringForSearch = stringForSearch.lowercase().trim()//нижнее не учитывает пробелы в начале
 //        if (lowerStringForSearch.last() == ' ') lowerStringForSearch = lowerStringForSearch.dropLast(1)
 
         when(typeOfSearchType){
@@ -82,13 +83,18 @@ class GetCoinsUseCase @Inject constructor(
             }
         }
 
-        Log.d("SearchCheck", "$startWithList")
-
+//        Log.d("SearchCheck", "$startWithList")
+        var listResult: List<CoinDto>
         if (accurateCoin != null) {
-            return (listOf(accurateCoin!!) + startWithList + filteredList)
+            listResult = (listOf(accurateCoin!!) + startWithList + filteredList)
         }
         else {
-            return (startWithList + filteredList)
+            listResult = (startWithList + filteredList)
         }
+
+        if (listResult.isEmpty()) throw ResultListException("Result list is empty.")
+        else return listResult
     }
 }
+
+class ResultListException(message: String): Exception(message)

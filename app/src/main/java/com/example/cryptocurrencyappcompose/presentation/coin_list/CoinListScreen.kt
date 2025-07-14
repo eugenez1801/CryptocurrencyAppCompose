@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -54,6 +55,7 @@ fun CoinListScreen(
                     Column(
                         modifier = Modifier
                             .padding(top = 5.dp, start = 20.dp)
+                            .weight(1f)
                     ) {
                         Text(
                             text = "You entered: ${searchStatusBar.enteredText!!}"
@@ -62,19 +64,31 @@ fun CoinListScreen(
                             text = "Type search: ${searchStatusBar.searchType.toString()}"
                         )
                     }
-                }
+                }else Spacer(modifier = Modifier.weight(1f))//идеально чтобы прижать иконки вправо
 
-                Box(
+                Row(
                     modifier = Modifier
-                        .weight(1f)
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 10.dp, top = 5.dp)
                 ){
                     IconButton(
                         onClick = {
-                            viewModel.dialogIsShown()
+                            viewModel.getCoins(searchStatusBar.enteredText)
                         },
                         modifier = Modifier
-                            .padding(top = 5.dp, end = 10.dp)
-                            .align(Alignment.CenterEnd)
+                            .padding(end = 10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "refresh",
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            viewModel.dialogIsShown()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Search,
@@ -146,14 +160,29 @@ fun CoinListScreen(
                         .padding(horizontal = 20.dp)
                 )
 
-                TextButton(
-                    onClick = {
-                        viewModel.getCoins()
+                if (state.error == "Result list is empty.")/*не лучший вариант, следовало бы
+                отдельный класс определить для типа ошибки. Либо же изменить CoinListState, добавив тип туда помимо сообщения*/
+                {
+                    TextButton(
+                        onClick = {
+                            viewModel.dialogIsShown()
+                        }
+                    ) {
+                        Text(
+                            text = "Go to search again"
+                        )
                     }
-                ) {
-                    Text(
-                        text = "Try again"
-                    )
+                }
+                else{
+                    TextButton(
+                        onClick = {
+                            viewModel.getCoins(searchStatusBar.enteredText)
+                        }
+                    ) {
+                        Text(
+                            text = "Try again"
+                        )
+                    }
                 }
             }
         }

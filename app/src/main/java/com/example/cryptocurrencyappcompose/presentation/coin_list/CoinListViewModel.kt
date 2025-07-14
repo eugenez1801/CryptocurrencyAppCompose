@@ -59,7 +59,7 @@ class CoinListViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun updateSearchStatusBar(searchType: SearchType, string: String) {
+    fun updateSearchStatusBar(searchType: SearchType?, string: String?) {
         searchStatusBarState.value = SearchStatusBar(
             searchType = searchType,
             enteredText = string

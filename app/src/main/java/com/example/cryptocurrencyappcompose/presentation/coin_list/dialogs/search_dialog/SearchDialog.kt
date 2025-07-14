@@ -28,7 +28,7 @@ fun SearchDialog(
     viewModel: CoinListViewModel = viewModel()
 ) {
     val text = viewModel.textInTextFieldState.value
-
+//    Log.d("TextProblem", "Text: ${text} ")
     val currentSearchType = viewModel.currentSearchTypeState.value
 
     val focusRequester = viewModel.focusRequesterState//для установки фокуса на текстФилд
@@ -42,6 +42,7 @@ fun SearchDialog(
     }*/
 
     LaunchedEffect(Unit) {
+//        viewModel.updateDialogsState("") при повороте экрана все тоже сбрасывается
         kotlinx.coroutines.delay(5)//все же нужен этот костыль
         focusRequester.requestFocus()
     }
@@ -78,9 +79,13 @@ fun SearchDialog(
                 TextField(
                     value = text,
                     onValueChange = { newText ->
-                        viewModel.updateDialogsState(newText)
+//                        Log.d("TextProblem", "New text: $newText")
+                        if (/*newText из-за этого была ошибка*/text.length <= 28) viewModel.textInTextFieldState.value = newText/*проблема
+                        с отображением при максимальной длине строки*/
+//                        viewModel.updateDialogsState(newText.take(28)) не помогло
                     },
-                    modifier = Modifier.focusRequester(focusRequester)
+                    modifier = Modifier.focusRequester(focusRequester),
+                    singleLine = true
                 )
             }
         },
@@ -91,7 +96,9 @@ fun SearchDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    onConfirmation(currentSearchType, text.trim())
+//                    Log.d("TextProblem", text)
+                    if (text.trim().isNotBlank())
+                        onConfirmation(currentSearchType, text.trim())
                     showAlertDialog.value = false
                     viewModel.updateDialogsState("")
                 }
