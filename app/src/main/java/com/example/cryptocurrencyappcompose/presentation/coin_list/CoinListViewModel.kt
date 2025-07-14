@@ -1,5 +1,6 @@
 package com.example.cryptocurrencyappcompose.presentation.coin_list
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.focus.FocusRequester
@@ -26,6 +27,10 @@ class CoinListViewModel @Inject constructor(
 
     val searchStatusBarState = mutableStateOf(SearchStatusBar())//для сохранения после поворота
 
+    val snackbarHostState = mutableStateOf(SnackbarHostState())
+
+    val backToStartState = mutableStateOf(false)
+
     //для диалога состояния
     val textInTextFieldState = mutableStateOf("")
 
@@ -38,6 +43,11 @@ class CoinListViewModel @Inject constructor(
     }
 
     fun getCoins(name: String? = null, symbol: String? = null){
+        if (name != null || symbol != null) backToStartState.value = true
+        else {
+            backToStartState.value = false
+            searchStatusBarState.value = SearchStatusBar()//прячем этот бар после нажатия возврата к начальному списку
+        }
         getCoinsUseCase(name, symbol).onEach { result ->
             when(result){
                 is Resource.Success -> {

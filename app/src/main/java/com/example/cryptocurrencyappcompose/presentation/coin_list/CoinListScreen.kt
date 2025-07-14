@@ -20,9 +20,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +36,7 @@ import com.example.cryptocurrencyappcompose.common.SearchType
 import com.example.cryptocurrencyappcompose.presentation.Screen
 import com.example.cryptocurrencyappcompose.presentation.coin_list.components.CoinListItem
 import com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.search_dialog.SearchDialog
+import kotlinx.coroutines.launch
 
 @Composable
 fun CoinListScreen(
@@ -44,6 +48,11 @@ fun CoinListScreen(
     val showSearchDialog = viewModel.showSearchDialog.value
 
     val searchStatusBar = viewModel.searchStatusBarState.value
+
+    val snackbarHost = viewModel.snackbarHostState.value
+    val scope = rememberCoroutineScope()
+
+    val backToStart = viewModel.backToStartState.value
 
     Box(Modifier.fillMaxSize()) {
         Column() {
@@ -108,7 +117,7 @@ fun CoinListScreen(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
-//                    .padding(top = 7.dp)тоже не получается, нужен Spacer
+                    .padding(bottom = if (backToStart) 40.dp else 0.dp),
             ) {
                 item {
                     Spacer(Modifier.height(7.dp))//изначально был стопроцентный вариант, но все остальное тоже испробовано
@@ -121,11 +130,34 @@ fun CoinListScreen(
                                 Screen.CoinDetailScreen.route +
                                         "/${coin.id}"
                             )
+                        }/*, плохой способ, не работает это так, последний остается на том же месте
+                        modifier = if (coin == state.coins.last()){
+                            Modifier.padding(bottom = 50.dp)
                         }
+                        else Modifier*/
                     )
                 }
             }
         }
+
+        if (backToStart){
+            TextButton(
+                onClick = {
+                    viewModel.getCoins()
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+            ) {
+                Text(
+                    text = "Back to start list"
+                )
+            }
+        }
+
+        SnackbarHost(
+            hostState = snackbarHost,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
 
         if (showSearchDialog){
             SearchDialog(
@@ -160,7 +192,8 @@ fun CoinListScreen(
                         .padding(horizontal = 20.dp)
                 )
 
-                if (state.error == "Result list is empty.")/*не лучший вариант, следовало бы
+                if (state.error == "Result list is empty." ||
+                    state.error == "The search field should not be empty.")/*не лучший вариант, следовало бы
                 отдельный класс определить для типа ошибки. Либо же изменить CoinListState, добавив тип туда помимо сообщения*/
                 {
                     TextButton(
@@ -186,6 +219,20 @@ fun CoinListScreen(
                 }
             }
         }
+
+        LaunchedEffect(state) {
+//            Log.d("EmptyField", "Launched called")
+            if (state.error == "The search field should not be empty."){
+//                Log.d("EmptyField", "if called")
+                scope.launch {
+//                    Log.d("EmptyField", "scope called")
+                    snackbarHost.showSnackbar(
+                        message = state.error
+                    )
+                }
+            }
+        }
+
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }

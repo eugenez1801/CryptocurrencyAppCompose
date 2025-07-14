@@ -97,8 +97,7 @@ fun SearchDialog(
             TextButton(
                 onClick = {
 //                    Log.d("TextProblem", text)
-                    if (text.trim().isNotBlank())
-                        onConfirmation(currentSearchType, text.trim())
+                    onConfirmation(currentSearchType, text.trim())
                     showAlertDialog.value = false
                     viewModel.updateDialogsState("")
                 }

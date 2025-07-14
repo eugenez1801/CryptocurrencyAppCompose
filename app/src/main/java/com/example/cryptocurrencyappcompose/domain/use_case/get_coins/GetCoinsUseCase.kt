@@ -22,12 +22,12 @@ class GetCoinsUseCase @Inject constructor(
             emit(Resource.Loading())
             val listOfCoinsDto = repository.getCoins()
 
-            if (!name.isNullOrBlank()){
+            if (name != null){
 //                Log.d("SearchCheck", "If сработал")
                 emit(Resource.Success(coinDtoToCoinByName(listOfCoinsDto, name)))
             }
 
-            else if (!symbol.isNullOrBlank()){
+            else if (symbol != null){
                 emit(Resource.Success(coinDtoToCoinBySymbol(listOfCoinsDto, symbol)))
             }
 
@@ -58,6 +58,10 @@ class GetCoinsUseCase @Inject constructor(
 
 
     private fun filterForSearch(stringForSearch: String, typeOfSearchType: SearchType, listDto: List<CoinDto>): List<CoinDto>{
+//        Log.d("EmptyField", "Before throw")
+        if (stringForSearch.isBlank()) throw ResultListException("The search field should not be empty.")
+//        Log.d("EmptyField", "After throw")
+
         val startWithList: MutableList<CoinDto> = mutableListOf()//список для коинов, начинающихся с этих букв
         val filteredList: MutableList<CoinDto> = mutableListOf()
         var accurateCoin: CoinDto? = null //для точного попадания
@@ -84,7 +88,7 @@ class GetCoinsUseCase @Inject constructor(
         }
 
 //        Log.d("SearchCheck", "$startWithList")
-        var listResult: List<CoinDto>
+        val listResult: List<CoinDto>
         if (accurateCoin != null) {
             listResult = (listOf(accurateCoin!!) + startWithList + filteredList)
         }
