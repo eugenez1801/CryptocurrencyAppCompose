@@ -1,5 +1,6 @@
 package com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.search_dialog.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,6 +29,7 @@ fun DefaultRadioButton(
         Text(
             text = text,
             modifier = Modifier.padding(start = 6.dp)
+                .clickable { onSelect() }
         )
     }
 }

@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -109,33 +107,94 @@ fun CoinListScreen(
             }
 
             HorizontalDivider(thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth(0.90f)
+                modifier = Modifier
+                    .fillMaxWidth(0.90f)
                     .align(Alignment.CenterHorizontally))
                     /*.padding(bottom = 7.dp, top = 7.dp)) Лучше сделать Spacer, поскольку при
                     * пролистывании эти 7dp снизу перекрывают контент*/
 //            Spacer(Modifier.height(7.dp)) то же самое, что и с паддингом. Стоит либо добавить Item либо padding самому Column
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(bottom = if (backToStart) 40.dp else 0.dp),
             ) {
-                item {
-                    Spacer(Modifier.height(7.dp))//изначально был стопроцентный вариант, но все остальное тоже испробовано
-                }
-                items(state.coins) { coin ->
+                /*item {
+                    Spacer(Modifier.height(4.dp))больше не нужен, так как подредачил центровку в CoinListItem
+                }*/
+                items(state.result.listCoins.size) { coinId ->
                     CoinListItem(
-                        coin = coin,
+                        coin = state.result.listCoins[coinId],
                         onItemClick = {
                             navController.navigate(
                                 Screen.CoinDetailScreen.route +
-                                        "/${coin.id}"
+                                        "/${state.result.listCoins[coinId].id}"
                             )
-                        }/*, плохой способ, не работает это так, последний остается на том же месте
-                        modifier = if (coin == state.coins.last()){
-                            Modifier.padding(bottom = 50.dp)
-                        }
-                        else Modifier*/
+
+                        },
+                        isAccurateCoin = if (coinId == 0) state.result.accurateCoinExists
+                        else false
                     )
+
+                    if (state.result.accurateCoinExists && coinId == 0) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.90f)
+                                    .align(Alignment.Center)
+                            )
+                        }
+
+                        Text(
+                            text = "Coins starting with your input string",
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 20.dp)
+                        )
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.90f)
+                                    .align(Alignment.Center)
+                            )
+                        }
+                    }
+
+                    if (state.result.indexOfLastStartWithListElement == coinId){
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.90f)
+                                    .align(Alignment.Center)
+                            )
+                        }
+
+                        Text(
+                            text = "Coins containing your input string",
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 20.dp)
+                        )
+
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ){
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.90f)
+                                    .align(Alignment.Center)
+                            )
+                        }
+                    }
                 }
             }
         }

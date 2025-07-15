@@ -16,7 +16,7 @@ class GetCoinsUseCase @Inject constructor(
     private val repository: CoinRepository
 ) {
 
-    operator fun invoke(name: String? = null, symbol: String? = null): Flow<Resource<List<Coin>>> = flow {
+    operator fun invoke(name: String? = null, symbol: String? = null): Flow<Resource<ResultGetCoinsUseCase>> = flow {
         try {
 //            Log.d("SearchCheck", "$name, $symbol")
             emit(Resource.Loading())
@@ -24,11 +24,11 @@ class GetCoinsUseCase @Inject constructor(
 
             if (name != null){
 //                Log.d("SearchCheck", "If сработал")
-                emit(Resource.Success(coinDtoToCoinByName(listOfCoinsDto, name)))
+                emit(Resource.Success(filterForSearch(name, SearchType.NAME, listOfCoinsDto)))
             }
 
             else if (symbol != null){
-                emit(Resource.Success(coinDtoToCoinBySymbol(listOfCoinsDto, symbol)))
+                emit(Resource.Success(filterForSearch(symbol, SearchType.SYMBOL, listOfCoinsDto)))
             }
 
             else {
@@ -43,21 +43,15 @@ class GetCoinsUseCase @Inject constructor(
         }
     }
 
-    private fun coinDtoToCoin(listDto: List<CoinDto>): List<Coin>{
-        return listDto.map {
-            it.toCoin()
-        }
+    private fun coinDtoToCoin(listDto: List<CoinDto>): ResultGetCoinsUseCase{
+        return ResultGetCoinsUseCase(
+            listDto.map {
+                it.toCoin()
+            }
+        )
     }
 
-    private fun coinDtoToCoinByName(listDto: List<CoinDto>, name: String): List<Coin> =
-        filterForSearch(name, SearchType.NAME, listDto).map { it.toCoin() }
-
-
-    private fun coinDtoToCoinBySymbol(listDto: List<CoinDto>, symbol: String): List<Coin> =
-        filterForSearch(symbol, SearchType.SYMBOL, listDto).map { it.toCoin() }
-
-
-    private fun filterForSearch(stringForSearch: String, typeOfSearchType: SearchType, listDto: List<CoinDto>): List<CoinDto>{
+    private fun filterForSearch(stringForSearch: String, typeOfSearchType: SearchType, listDto: List<CoinDto>): ResultGetCoinsUseCase{
 //        Log.d("EmptyField", "Before throw")
         if (stringForSearch.isBlank()) throw ResultListException("The search field should not be empty.")
 //        Log.d("EmptyField", "After throw")
@@ -88,16 +82,21 @@ class GetCoinsUseCase @Inject constructor(
         }
 
 //        Log.d("SearchCheck", "$startWithList")
-        val listResult: List<CoinDto>
+        val listResult: List<Coin>
         if (accurateCoin != null) {
-            listResult = (listOf(accurateCoin!!) + startWithList + filteredList)
+            listResult = (listOf(accurateCoin!!) + startWithList + filteredList).map { it.toCoin() }
+            val indexOfLastStartWithListElement = startWithList.size
+            if (listResult.isEmpty()) throw ResultListException("Result list is empty.")
+            return ResultGetCoinsUseCase(listResult, true,
+                indexOfLastStartWithListElement)
         }
         else {
-            listResult = (startWithList + filteredList)
+            listResult = (startWithList + filteredList).map { it.toCoin() }
+            val indexOfLastStartWithListElement = startWithList.size - 1
+            if (listResult.isEmpty()) throw ResultListException("Result list is empty.")
+            return ResultGetCoinsUseCase(listResult,
+                indexOfLastStartWithListElement = indexOfLastStartWithListElement)
         }
-
-        if (listResult.isEmpty()) throw ResultListException("Result list is empty.")
-        else return listResult
     }
 }
 

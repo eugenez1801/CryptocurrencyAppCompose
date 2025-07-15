@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencyappcompose.common.Resource
 import com.example.cryptocurrencyappcompose.common.SearchType
 import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.GetCoinsUseCase
+import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.ResultGetCoinsUseCase
 import com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.SearchStatusBar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -52,7 +53,7 @@ class CoinListViewModel @Inject constructor(
             when(result){
                 is Resource.Success -> {
                     _state.value = CoinListState(
-                        coins = result.data ?: emptyList(),
+                        result = result.data ?: ResultGetCoinsUseCase(),
                     )
                 }
                 is Resource.Error -> {

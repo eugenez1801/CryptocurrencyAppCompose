@@ -1,9 +1,9 @@
 package com.example.cryptocurrencyappcompose.presentation.coin_list
 
-import com.example.cryptocurrencyappcompose.domain.model.Coin
+import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.ResultGetCoinsUseCase
 
 data class CoinListState(
     val isLoading: Boolean = false,
-    val coins: List<Coin> = emptyList(),
+    val result: ResultGetCoinsUseCase = ResultGetCoinsUseCase(),
     val error: String = ""
 )
