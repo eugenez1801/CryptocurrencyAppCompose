@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencyappcompose.common.Resource
 import com.example.cryptocurrencyappcompose.common.SearchType
+import com.example.cryptocurrencyappcompose.domain.model.Coin
 import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.GetCoinsUseCase
 import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.ResultGetCoinsUseCase
 import com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.SearchStatusBar
@@ -32,6 +33,10 @@ class CoinListViewModel @Inject constructor(
 
     val backToStartState = mutableStateOf(false)
 
+    val loadedListOfCoins = mutableStateOf<List<Coin>?>(null)
+
+//    val needRefreshState = mutableStateOf(true)
+
     //для диалога состояния
     val textInTextFieldState = mutableStateOf("")
 
@@ -43,19 +48,65 @@ class CoinListViewModel @Inject constructor(
         getCoins()
     }
 
-    fun getCoins(name: String? = null, symbol: String? = null){
-        if (name != null || symbol != null) backToStartState.value = true
+    fun getCoins(request: String? = null){
+        if (request != null) backToStartState.value = true
         else {
             backToStartState.value = false
             searchStatusBarState.value = SearchStatusBar()//прячем этот бар после нажатия возврата к начальному списку
         }
-        getCoinsUseCase(name, symbol).onEach { result ->
+
+//        Log.d("LoadedListCheck", "getCoinsUseCase вызван: request = $request," +
+//                " loadedList = ${loadedListOfCoins.value?.size}")
+        getCoinsUseCase(request, searchStatusBarState.value.searchType,
+            loadedListOfCoins.value).onEach { result ->
+            when(result){
+                is Resource.Success -> {
+//                    Log.d("LoadedListCheck", "Success")
+                    _state.value = CoinListState(
+                        result = result.data ?: ResultGetCoinsUseCase()
+                    )
+                    if (loadedListOfCoins.value.isNullOrEmpty()) loadedListOfCoins.value =
+                        result.data?.listCoins
+//                    Log.d("LoadedListCheck", "List: ${loadedListOfCoins.value?.size}")
+                }
+                is Resource.Error -> {
+                    _state.value = CoinListState(
+                        error = result.message ?: "Unknown error"
+                    )
+                }
+                is Resource.Loading -> {
+                    _state.value = CoinListState(
+                        isLoading = true
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun getCoinsAfterRefresh(request: String? = null){
+//        Log.d("RefreshCheck", "getCoinsAfterRefresh вызван: request = $request")
+        if (request != null) backToStartState.value = true
+        else {
+            backToStartState.value = false
+            searchStatusBarState.value = SearchStatusBar()//прячем этот бар после нажатия возврата к начальному списку
+        }
+
+        getCoinsUseCase(
+            request = request,
+            searchType = searchStatusBarState.value.searchType,
+            needRefresh = true
+        ).onEach { result ->
+//            Log.d("RefreshCheck", "Result получен")
             when(result){
                 is Resource.Success -> {
                     _state.value = CoinListState(
-                        result = result.data ?: ResultGetCoinsUseCase(),
+                        result = result.data!!
                     )
+//                    Log.d("RefreshCheck", "Успешный getCoinsAfterRefresh")
+//                    Log.d("LoadedListCheck", "Loaded list from refresh = ${result.data.refreshedListCoins.size}")
+                    loadedListOfCoins.value = result.data.refreshedListCoins
                 }
+
                 is Resource.Error -> {
                     _state.value = CoinListState(
                         error = result.message ?: "Unknown error"

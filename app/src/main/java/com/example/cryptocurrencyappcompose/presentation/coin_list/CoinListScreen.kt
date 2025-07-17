@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.cryptocurrencyappcompose.common.SearchType
 import com.example.cryptocurrencyappcompose.presentation.Screen
 import com.example.cryptocurrencyappcompose.presentation.coin_list.components.CoinListItem
 import com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.search_dialog.SearchDialog
@@ -80,7 +79,8 @@ fun CoinListScreen(
                 ){
                     IconButton(
                         onClick = {
-                            viewModel.getCoins(searchStatusBar.enteredText)
+//                            Log.d("RefreshCheck", "Refresh нажат")
+                            viewModel.getCoinsAfterRefresh(searchStatusBar.enteredText)
                         },
                         modifier = Modifier
                             .padding(end = 10.dp)
@@ -223,15 +223,7 @@ fun CoinListScreen(
                 showAlertDialog = viewModel.showSearchDialog,
                 onConfirmation = { searchType, string ->
                     viewModel.updateSearchStatusBar(searchType, string)
-                    when (searchType) {
-                        SearchType.NAME -> {
-                            viewModel.getCoins(name = string)
-                        }
-
-                        SearchType.SYMBOL -> {
-                            viewModel.getCoins(symbol = string)
-                        }
-                    }
+                    viewModel.getCoins(string)
                 }
             )
         }
