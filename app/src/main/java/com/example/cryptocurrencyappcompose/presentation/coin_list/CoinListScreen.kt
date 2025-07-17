@@ -260,12 +260,24 @@ fun CoinListScreen(
                 else{
                     TextButton(
                         onClick = {
-                            viewModel.getCoins(searchStatusBar.enteredText)
+                            viewModel.getCoinsAfterRefresh(searchStatusBar.enteredText)
                         }
                     ) {
                         Text(
                             text = "Try again"
                         )
+                    }
+
+                    if (!viewModel.loadedListOfCoins.value.isNullOrEmpty()){
+                        TextButton(
+                            onClick = {
+                                viewModel.getCoins()
+                            }
+                        ) {
+                            Text(
+                                text = "Back to start list of coins"
+                            )
+                        }
                     }
                 }
             }

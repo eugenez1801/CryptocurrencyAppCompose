@@ -90,12 +90,13 @@ class CoinListViewModel @Inject constructor(
             backToStartState.value = false
             searchStatusBarState.value = SearchStatusBar()//прячем этот бар после нажатия возврата к начальному списку
         }
-
+//        Log.d("InternetCheck", "getCoinsUseCase вызван из getCoinsAfterRefresh")
         getCoinsUseCase(
             request = request,
             searchType = searchStatusBarState.value.searchType,
             needRefresh = true
         ).onEach { result ->
+//            Log.d("InternetCheck", "result: ${result}")
 //            Log.d("RefreshCheck", "Result получен")
             when(result){
                 is Resource.Success -> {
@@ -105,17 +106,21 @@ class CoinListViewModel @Inject constructor(
 //                    Log.d("RefreshCheck", "Успешный getCoinsAfterRefresh")
 //                    Log.d("LoadedListCheck", "Loaded list from refresh = ${result.data.refreshedListCoins.size}")
                     loadedListOfCoins.value = result.data.refreshedListCoins
+                    if (request != null) backToStartState.value = true//возвращаем кнопку после Loading
                 }
 
                 is Resource.Error -> {
                     _state.value = CoinListState(
                         error = result.message ?: "Unknown error"
                     )
+                    if (request != null) backToStartState.value = true//возвращаем кнопку после Loading
                 }
+
                 is Resource.Loading -> {
                     _state.value = CoinListState(
                         isLoading = true
                     )
+                    backToStartState.value = false//чтобы во время Loading этой кнопки не было
                 }
             }
         }.launchIn(viewModelScope)
