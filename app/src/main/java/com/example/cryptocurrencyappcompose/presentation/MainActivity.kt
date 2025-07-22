@@ -16,6 +16,7 @@ import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailS
 import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailViewModel
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListScreen
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListViewModel
+import com.example.cryptocurrencyappcompose.presentation.sign_up.SignInScreen
 import com.example.cryptocurrencyappcompose.presentation.sign_up.SignUpScreen
 import com.example.cryptocurrencyappcompose.presentation.sign_up.SignUpViewModel
 import com.example.cryptocurrencyappcompose.presentation.ui.theme.CryptocurrencyAppComposeTheme
@@ -55,6 +56,13 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val viewModel = hiltViewModel<SignUpViewModel>()
                             SignUpScreen(navController)
+                        }
+
+                        composable(
+                            route = Screen.SignInScreen.route
+                        ) {
+                            val viewModel = hiltViewModel<SignUpViewModel>()
+                            SignInScreen(navController)
                         }
                     }
                 }

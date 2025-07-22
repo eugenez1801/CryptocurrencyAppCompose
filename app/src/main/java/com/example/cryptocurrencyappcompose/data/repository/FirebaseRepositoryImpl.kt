@@ -19,4 +19,14 @@ class FirebaseRepositoryImpl @Inject constructor(
             AuthState.Error(e.message!!)
         }
     }
+
+    override suspend fun signIn(email: String, password: String): AuthState {
+        return try {
+            firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            AuthState.Authenticated
+        }
+        catch (e: Exception){
+            AuthState.Error(e.message!!)
+        }
+    }
 }

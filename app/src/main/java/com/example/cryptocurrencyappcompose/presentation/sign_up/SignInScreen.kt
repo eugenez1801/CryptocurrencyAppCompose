@@ -2,7 +2,6 @@ package com.example.cryptocurrencyappcompose.presentation.sign_up
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,12 +36,12 @@ import com.example.cryptocurrencyappcompose.presentation.Screen
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(
+fun SignInScreen(
     navController: NavController,
     viewModel: SignUpViewModel = viewModel()
 ) {
-    val emailText = viewModel.emailTextState.value
-    val passwordText = viewModel.passwordTextState.value
+    val emailText = viewModel.emailLoginTextState.value
+    val passwordText = viewModel.passwordLoginTextState.value
 
     val isPasswordShown = viewModel.isPasswordShownState.value
 
@@ -58,7 +56,7 @@ fun SignUpScreen(
         TextField(
             value = emailText,
             onValueChange = {
-                viewModel.emailTextState.value = it
+                viewModel.emailLoginTextState.value = it
             },
             label = {
                 Text(text = "Email address")
@@ -76,7 +74,7 @@ fun SignUpScreen(
             value = passwordText,
 //            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
             onValueChange = {
-                viewModel.passwordTextState.value = it
+                viewModel.passwordLoginTextState.value = it
             },
             label = {
                 Text(text = "Password")
@@ -109,14 +107,14 @@ fun SignUpScreen(
         Button(
             onClick = {
                 scope.launch {
-                    when (val resultSignUp = viewModel.registerNewUser()) {
+                    when (val resultSignIn = viewModel.loginUser()) {
                         is AuthState.Authenticated -> {
                             navController.navigate(Screen.CoinListScreen.route)
                         }
 
                         is AuthState.Error -> {
                             Toast.makeText(
-                                context, resultSignUp.message,
+                                context, resultSignIn.message,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -135,17 +133,17 @@ fun SignUpScreen(
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(
-                text = "Sign Up"
+                text = "Login"
             )
         }
 
         /*Box(при таком подходе возникает эффект нажатия ненужный и неуместный
             modifier = Modifier
                 .fillMaxWidth(0.7f)
-        ) {
+        ){
             TextButton(
                 onClick = {
-                    navController.navigate(Screen.SignInScreen.route)
+                    navController.navigate(Screen.SignUpScreen.route)
                 },
                 modifier = Modifier
                     .height(30.dp),
@@ -155,39 +153,8 @@ fun SignUpScreen(
                 )
             ) {
                 Text(
-                    text = "Already have an account? Sign in",
+                    text = "Don't have an account? Sign Up"
                 )
-            }
-        }*/
-
-        /*Box( как вариант
-            Modifier.fillMaxWidth(0.7f)
-        ){
-            Box(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ){
-                        navController.navigate(Screen.SignInScreen.route)
-                    }
-            .padding(top = 5.dp, bottom = 5.dp, end = 2.dp)
-            ){
-                Row(
-
-                ){
-                    Text(
-                        text = "Already have an account?",
-                        fontSize = 14.sp
-                    )
-
-                    Text(
-                        text = " Sign in",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
             }
         }*/
 
@@ -200,21 +167,21 @@ fun SignUpScreen(
                     .padding(vertical = 5.dp)
             ){
                 Text(
-                    text = "Already have an account?",
+                    text = "Don't have an account?",
                     fontSize = 15.sp
                 )
 
                 Text(
-                    text = "Sign In",
+                    text = "Sign Up",
                     fontSize = 15.sp,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .padding(start = 3.dp)//вариант с " Sign in" не оч, потому что пробел тоже выделяется при нажатии
+                        .padding(start = 3.dp)
                         .clickable/*(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         )*/{
-                            navController.navigate(Screen.SignInScreen.route)
+                            navController.navigate(Screen.SignUpScreen.route)
                         }
                 )
             }
