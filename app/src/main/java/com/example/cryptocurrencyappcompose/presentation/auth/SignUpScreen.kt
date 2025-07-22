@@ -1,52 +1,36 @@
-package com.example.cryptocurrencyappcompose.presentation.sign_up
+package com.example.cryptocurrencyappcompose.presentation.auth
 
-import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.cryptocurrencyappcompose.R
-import com.example.cryptocurrencyappcompose.presentation.Screen
-import kotlinx.coroutines.launch
 
 @Composable
-fun SignInScreen(
-    navController: NavController,
-    viewModel: SignUpViewModel = viewModel()
+fun SignUpScreen(
+    emailText: String,
+    onEmailTextChange: (String) -> Unit,
+    passwordText: String,
+    onPasswordTextChange: (String) -> Unit,
+    isPasswordShown: Boolean,
+    onIsPasswordShownChange: () -> Unit,
+    onSignUpClick: () -> Unit
 ) {
-    val emailText = viewModel.emailLoginTextState.value
-    val passwordText = viewModel.passwordLoginTextState.value
-
-    val isPasswordShown = viewModel.isPasswordShownState.value
-
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -56,7 +40,7 @@ fun SignInScreen(
         TextField(
             value = emailText,
             onValueChange = {
-                viewModel.emailLoginTextState.value = it
+                onEmailTextChange(it)
             },
             label = {
                 Text(text = "Email address")
@@ -74,7 +58,7 @@ fun SignInScreen(
             value = passwordText,
 //            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
             onValueChange = {
-                viewModel.passwordLoginTextState.value = it
+                onPasswordTextChange(it)
             },
             label = {
                 Text(text = "Password")
@@ -88,7 +72,7 @@ fun SignInScreen(
                 IconToggleButton(
                     checked = isPasswordShown,
                     onCheckedChange = {
-                        viewModel.isPasswordShownState.value = !viewModel.isPasswordShownState.value
+                        onIsPasswordShownChange()
                     },
                 ) {
                     Icon(
@@ -106,44 +90,24 @@ fun SignInScreen(
 
         Button(
             onClick = {
-                scope.launch {
-                    when (val resultSignIn = viewModel.loginUser()) {
-                        is AuthState.Authenticated -> {
-                            navController.navigate(Screen.CoinListScreen.route)
-                        }
-
-                        is AuthState.Error -> {
-                            Toast.makeText(
-                                context, resultSignIn.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        else -> {
-                            Toast.makeText(
-                                context, "Unexpected error",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }
+                onSignUpClick()
             },
             modifier = Modifier
                 .fillMaxWidth(0.7f),
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(
-                text = "Login"
+                text = "Sign Up"
             )
         }
 
         /*Box(при таком подходе возникает эффект нажатия ненужный и неуместный
             modifier = Modifier
                 .fillMaxWidth(0.7f)
-        ){
+        ) {
             TextButton(
                 onClick = {
-                    navController.navigate(Screen.SignUpScreen.route)
+                    navController.navigate(Screen.SignInScreen.route)
                 },
                 modifier = Modifier
                     .height(30.dp),
@@ -153,38 +117,40 @@ fun SignInScreen(
                 )
             ) {
                 Text(
-                    text = "Don't have an account? Sign Up"
+                    text = "Already have an account? Sign in",
                 )
             }
         }*/
 
-        Box(
+        /*Box( как вариант
             Modifier.fillMaxWidth(0.7f)
         ){
-            Row(
+            Box(
                 modifier = Modifier
                     .wrapContentSize()
-                    .padding(vertical = 5.dp)
+                    .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ){
+                        navController.navigate(Screen.SignInScreen.route)
+                    }
+            .padding(top = 5.dp, bottom = 5.dp, end = 2.dp)
             ){
-                Text(
-                    text = "Don't have an account?",
-                    fontSize = 15.sp
-                )
+                Row(
 
-                Text(
-                    text = "Sign Up",
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(start = 3.dp)
-                        .clickable/*(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        )*/{
-                            navController.navigate(Screen.SignUpScreen.route)
-                        }
-                )
+                ){
+                    Text(
+                        text = "Already have an account?",
+                        fontSize = 14.sp
+                    )
+
+                    Text(
+                        text = " Sign in",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
-        }
+        }*/
     }
 }

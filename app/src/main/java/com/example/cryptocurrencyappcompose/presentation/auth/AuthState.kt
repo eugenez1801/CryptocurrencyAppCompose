@@ -1,4 +1,4 @@
-package com.example.cryptocurrencyappcompose.presentation.sign_up
+package com.example.cryptocurrencyappcompose.presentation.auth
 
 sealed class AuthState {//заменять на data class не нужно, поскольку требуются синглтоны
     object Authenticated : AuthState()

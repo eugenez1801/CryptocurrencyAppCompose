@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
@@ -12,13 +11,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cryptocurrencyappcompose.presentation.auth.AuthScreen
 import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailScreen
 import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailViewModel
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListScreen
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListViewModel
-import com.example.cryptocurrencyappcompose.presentation.sign_up.SignInScreen
-import com.example.cryptocurrencyappcompose.presentation.sign_up.SignUpScreen
-import com.example.cryptocurrencyappcompose.presentation.sign_up.SignUpViewModel
+import com.example.cryptocurrencyappcompose.presentation.auth.SignUpViewModel
 import com.example.cryptocurrencyappcompose.presentation.ui.theme.CryptocurrencyAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.SignUpScreen.route
+                        startDestination = Screen.AuthScreen.route
                     ) {
                         composable(
                             route = Screen.CoinListScreen.route
@@ -52,17 +50,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = Screen.SignUpScreen.route
+                            route = Screen.AuthScreen.route
                         ) {
                             val viewModel = hiltViewModel<SignUpViewModel>()
-                            SignUpScreen(navController)
-                        }
-
-                        composable(
-                            route = Screen.SignInScreen.route
-                        ) {
-                            val viewModel = hiltViewModel<SignUpViewModel>()
-                            SignInScreen(navController)
+                            AuthScreen(navController)
                         }
                     }
                 }

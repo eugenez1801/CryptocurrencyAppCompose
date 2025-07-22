@@ -1,7 +1,7 @@
 package com.example.cryptocurrencyappcompose.domain.use_case.sign_up
 
 import com.example.cryptocurrencyappcompose.domain.repository.FirebaseRepository
-import com.example.cryptocurrencyappcompose.presentation.sign_up.AuthState
+import com.example.cryptocurrencyappcompose.presentation.auth.AuthState
 import javax.inject.Inject
 
 class SignUpUseCase @Inject constructor(

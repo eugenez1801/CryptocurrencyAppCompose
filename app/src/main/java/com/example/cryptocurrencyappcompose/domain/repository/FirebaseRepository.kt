@@ -1,6 +1,6 @@
 package com.example.cryptocurrencyappcompose.domain.repository
 
-import com.example.cryptocurrencyappcompose.presentation.sign_up.AuthState
+import com.example.cryptocurrencyappcompose.presentation.auth.AuthState
 
 interface FirebaseRepository {
     suspend fun signUp(email: String, password: String): AuthState

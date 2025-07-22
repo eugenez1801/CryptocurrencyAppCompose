@@ -1,5 +1,6 @@
-package com.example.cryptocurrencyappcompose.presentation.sign_up
+package com.example.cryptocurrencyappcompose.presentation.auth
 
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.cryptocurrencyappcompose.domain.use_case.sign_up.SignInUseCase
@@ -19,6 +20,9 @@ class SignUpViewModel @Inject constructor(
 
     val emailLoginTextState = mutableStateOf("")
     val passwordLoginTextState = mutableStateOf("")
+
+    //для pager
+    val currentPageInPager = mutableIntStateOf(0)
 
     suspend fun registerNewUser(): AuthState{
         return signUpUseCase(emailTextState.value, passwordTextState.value)
