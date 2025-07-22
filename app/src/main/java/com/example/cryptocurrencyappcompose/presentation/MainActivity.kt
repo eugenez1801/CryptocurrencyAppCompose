@@ -16,6 +16,8 @@ import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailS
 import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailViewModel
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListScreen
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListViewModel
+import com.example.cryptocurrencyappcompose.presentation.sign_up.SignUpScreen
+import com.example.cryptocurrencyappcompose.presentation.sign_up.SignUpViewModel
 import com.example.cryptocurrencyappcompose.presentation.ui.theme.CryptocurrencyAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.CoinListScreen.route
+                        startDestination = Screen.SignUpScreen.route
                     ) {
                         composable(
                             route = Screen.CoinListScreen.route
@@ -46,6 +48,13 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val viewModel = hiltViewModel<CoinDetailViewModel>()
                             CoinDetailScreen()
+                        }
+
+                        composable(
+                            route = Screen.SignUpScreen.route
+                        ) {
+                            val viewModel = hiltViewModel<SignUpViewModel>()
+                            SignUpScreen(navController)
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.search_dialog
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cryptocurrencyappcompose.common.SearchType
@@ -32,6 +34,8 @@ fun SearchDialog(
     val currentSearchType = viewModel.currentSearchTypeState.value
 
     val focusRequester = viewModel.focusRequesterState//для установки фокуса на текстФилд
+
+    val context = LocalContext.current
 
     /*if (showAlertDialog.value) { это работает благодаря delay, но как то ненадежно, не хочу так
         LaunchedEffect(showAlertDialog.value) {
@@ -97,9 +101,14 @@ fun SearchDialog(
             TextButton(
                 onClick = {
 //                    Log.d("TextProblem", text)
-                    onConfirmation(currentSearchType, text.trim())
-                    showAlertDialog.value = false
-                    viewModel.updateDialogsState("")
+                    if (text.trim().isBlank()){
+                        Toast.makeText(context, "The search field should not be empty",
+                            Toast.LENGTH_SHORT).show()
+                    } else{
+                        onConfirmation(currentSearchType, text.trim())
+                        showAlertDialog.value = false
+                        viewModel.updateDialogsState("")
+                    }
                 }
             ) {
                 Text("Confirm")

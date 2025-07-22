@@ -46,8 +46,8 @@ fun CoinListScreen(
 
     val searchStatusBar = viewModel.searchStatusBarState.value
 
-    val snackbarHost = viewModel.snackbarHostState.value
-    val scope = rememberCoroutineScope()
+//    val snackbarHost = viewModel.snackbarHostState.value
+//    val scope = rememberCoroutineScope()
 
     val backToStart = viewModel.backToStartState.value
 
@@ -213,10 +213,10 @@ fun CoinListScreen(
             }
         }
 
-        SnackbarHost(
+        /*SnackbarHost(
             hostState = snackbarHost,
             modifier = Modifier.align(Alignment.BottomCenter)
-        )
+        )*/
 
         if (showSearchDialog){
             SearchDialog(
@@ -283,7 +283,7 @@ fun CoinListScreen(
             }
         }
 
-        LaunchedEffect(state) {
+        /*LaunchedEffect(state) {
 //            Log.d("EmptyField", "Launched called")
             if (state.error == "The search field should not be empty."){
 //                Log.d("EmptyField", "if called")
@@ -294,7 +294,7 @@ fun CoinListScreen(
                     )
                 }
             }
-        }
+        }*/
 
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

@@ -1,6 +1,5 @@
 package com.example.cryptocurrencyappcompose.presentation.coin_list
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.focus.FocusRequester
@@ -29,7 +28,7 @@ class CoinListViewModel @Inject constructor(
 
     val searchStatusBarState = mutableStateOf(SearchStatusBar())//для сохранения после поворота
 
-    val snackbarHostState = mutableStateOf(SnackbarHostState())
+//    val snackbarHostState = mutableStateOf(SnackbarHostState())
 
     val backToStartState = mutableStateOf(false)
 

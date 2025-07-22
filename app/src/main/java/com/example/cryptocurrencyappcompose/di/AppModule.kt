@@ -3,7 +3,10 @@ package com.example.cryptocurrencyappcompose.di
 import com.example.cryptocurrencyappcompose.common.Constants
 import com.example.cryptocurrencyappcompose.data.remote.CoinPaprikaApi
 import com.example.cryptocurrencyappcompose.data.repository.CoinRepositoryImpl
+import com.example.cryptocurrencyappcompose.data.repository.FirebaseRepositoryImpl
 import com.example.cryptocurrencyappcompose.domain.repository.CoinRepository
+import com.example.cryptocurrencyappcompose.domain.repository.FirebaseRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +31,19 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: CoinPaprikaApi): CoinRepository{
+    fun provideCoinRepository(api: CoinPaprikaApi): CoinRepository{
         return CoinRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRepository(auth: FirebaseAuth): FirebaseRepository{
+        return FirebaseRepositoryImpl(auth)
     }
 }

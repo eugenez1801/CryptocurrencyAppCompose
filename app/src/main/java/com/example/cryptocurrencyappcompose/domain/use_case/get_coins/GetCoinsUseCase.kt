@@ -1,6 +1,5 @@
 package com.example.cryptocurrencyappcompose.domain.use_case.get_coins
 
-import android.util.Log
 import com.example.cryptocurrencyappcompose.common.Resource
 import com.example.cryptocurrencyappcompose.common.SearchType
 import com.example.cryptocurrencyappcompose.data.remote.dto.toCoin
@@ -85,7 +84,7 @@ class GetCoinsUseCase @Inject constructor(
     private fun filterForSearch(stringForSearch: String, typeOfSearchType: SearchType, listCoin: List<Coin>,
                                 needRefreshedList: Boolean = false): ResultGetCoinsUseCase{
 //        Log.d("EmptyField", "Before throw")
-        if (stringForSearch.isBlank()) throw ResultListException("The search field should not be empty.")
+//        if (stringForSearch.isBlank()) throw ResultListException("The search field should not be empty.")
 //        Log.d("EmptyField", "After throw")
 
         val startWithList: MutableList<Coin> = mutableListOf()//список для коинов, начинающихся с этих букв
