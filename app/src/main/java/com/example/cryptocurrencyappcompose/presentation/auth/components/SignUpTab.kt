@@ -1,4 +1,4 @@
-package com.example.cryptocurrencyappcompose.presentation.auth
+package com.example.cryptocurrencyappcompose.presentation.auth.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,8 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -24,19 +22,20 @@ import androidx.compose.ui.unit.dp
 import com.example.cryptocurrencyappcompose.R
 
 @Composable
-fun SignInScreen(
+fun SignUpTab(
     emailText: String,
     onEmailTextChange: (String) -> Unit,
     passwordText: String,
     onPasswordTextChange: (String) -> Unit,
     isPasswordShown: Boolean,
     onIsPasswordShownChange: () -> Unit,
-    onLoginClick: () -> Unit
+    onSignUpClick: () -> Unit
 ) {
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         TextField(
             value = emailText,
@@ -91,15 +90,67 @@ fun SignInScreen(
 
         Button(
             onClick = {
-                onLoginClick()
+                onSignUpClick()
             },
             modifier = Modifier
                 .fillMaxWidth(0.7f),
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(
-                text = "Login"
+                text = "Sign Up"
             )
         }
+
+        /*Box(при таком подходе возникает эффект нажатия ненужный и неуместный
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+        ) {
+            TextButton(
+                onClick = {
+                    navController.navigate(Screen.SignInScreen.route)
+                },
+                modifier = Modifier
+                    .height(30.dp),
+                contentPadding = PaddingValues(
+                    horizontal = 4.dp,
+                    vertical = 0.dp
+                )
+            ) {
+                Text(
+                    text = "Already have an account? Sign in",
+                )
+            }
+        }*/
+
+        /*Box( как вариант
+            Modifier.fillMaxWidth(0.7f)
+        ){
+            Box(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ){
+                        navController.navigate(Screen.SignInScreen.route)
+                    }
+            .padding(top = 5.dp, bottom = 5.dp, end = 2.dp)
+            ){
+                Row(
+
+                ){
+                    Text(
+                        text = "Already have an account?",
+                        fontSize = 14.sp
+                    )
+
+                    Text(
+                        text = " Sign in",
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }*/
     }
 }

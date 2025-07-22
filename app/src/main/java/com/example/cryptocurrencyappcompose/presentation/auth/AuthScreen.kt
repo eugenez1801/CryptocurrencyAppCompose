@@ -2,8 +2,13 @@ package com.example.cryptocurrencyappcompose.presentation.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
@@ -11,18 +16,21 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cryptocurrencyappcompose.presentation.Screen
+import com.example.cryptocurrencyappcompose.presentation.auth.components.SignInTab
+import com.example.cryptocurrencyappcompose.presentation.auth.components.SignUpTab
 import kotlinx.coroutines.launch
 
 @Composable
 fun AuthScreen(
     navController: NavController,
-    viewModel: SignUpViewModel = viewModel()
+    viewModel: AuthViewModel = viewModel()
 ) {
     //все для экранов Sign InUp
     val emailText = viewModel.emailTextState.value
@@ -43,16 +51,24 @@ fun AuthScreen(
     )
     val tabIndex = pagerState.currentPage
 
-    Column() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Spacer(Modifier
+            .weight(1f))
         TabRow(
             selectedTabIndex = tabIndex,
             indicator = { pos ->
                 SecondaryIndicator(
                     modifier = Modifier
                         .tabIndicatorOffset(currentTabPosition = pos[tabIndex]),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.primary
                 )
-            }
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .align(Alignment.CenterHorizontally)
         ) {
             tabList.forEachIndexed { index, text ->
                 Tab(
@@ -70,11 +86,14 @@ fun AuthScreen(
         }
 
         HorizontalPager(
-            state = pagerState
+            state = pagerState,
+            modifier = Modifier
+                .weight(2f, fill = true)
+                .padding(top = 15.dp)
         ) { index ->
             when (index) {
                 0 -> {
-                    SignInScreen(
+                    SignInTab(
                         emailText = emailLoginText,
                         onEmailTextChange = { newText ->
                             viewModel.emailLoginTextState.value = newText
@@ -118,7 +137,7 @@ fun AuthScreen(
                 }
 
                 1 -> {
-                    SignUpScreen(
+                    SignUpTab(
                         emailText = emailText,
                         onEmailTextChange = { newText ->
                             viewModel.emailTextState.value = newText
@@ -162,5 +181,7 @@ fun AuthScreen(
                 }
             }
         }
+//        Spacer(modifier = Modifier
+//            .weight(1f))
     }
 }

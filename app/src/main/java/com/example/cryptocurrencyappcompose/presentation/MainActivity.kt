@@ -16,7 +16,7 @@ import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailS
 import com.example.cryptocurrencyappcompose.presentation.coin_detail.CoinDetailViewModel
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListScreen
 import com.example.cryptocurrencyappcompose.presentation.coin_list.CoinListViewModel
-import com.example.cryptocurrencyappcompose.presentation.auth.SignUpViewModel
+import com.example.cryptocurrencyappcompose.presentation.auth.AuthViewModel
 import com.example.cryptocurrencyappcompose.presentation.ui.theme.CryptocurrencyAppComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.AuthScreen.route
                         ) {
-                            val viewModel = hiltViewModel<SignUpViewModel>()
+                            val viewModel = hiltViewModel<AuthViewModel>()
                             AuthScreen(navController)
                         }
                     }
