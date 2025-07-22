@@ -29,7 +29,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cryptocurrencyappcompose.R
 import com.example.cryptocurrencyappcompose.presentation.Screen
@@ -38,7 +37,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignInScreen(
     navController: NavController,
-    viewModel: SignUpViewModel = viewModel()
+    viewModel: SignUpViewModel
 ) {
     val emailText = viewModel.emailLoginTextState.value
     val passwordText = viewModel.passwordLoginTextState.value

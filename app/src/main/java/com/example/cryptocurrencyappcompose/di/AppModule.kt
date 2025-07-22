@@ -6,6 +6,9 @@ import com.example.cryptocurrencyappcompose.data.repository.CoinRepositoryImpl
 import com.example.cryptocurrencyappcompose.data.repository.FirebaseRepositoryImpl
 import com.example.cryptocurrencyappcompose.domain.repository.CoinRepository
 import com.example.cryptocurrencyappcompose.domain.repository.FirebaseRepository
+import com.example.cryptocurrencyappcompose.domain.use_case.sign_up.SignInUseCase
+import com.example.cryptocurrencyappcompose.domain.use_case.sign_up.SignUpUseCase
+import com.example.cryptocurrencyappcompose.presentation.sign_up.SignUpViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -45,5 +48,23 @@ object AppModule {
     @Singleton
     fun provideFirebaseRepository(auth: FirebaseAuth): FirebaseRepository{
         return FirebaseRepositoryImpl(auth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignUpUseCase(repository: FirebaseRepository): SignUpUseCase{
+        return SignUpUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignInUseCase(repository: FirebaseRepository): SignInUseCase {
+        return SignInUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignUpViewModel(signUpUseCase: SignUpUseCase, signInUseCase: SignInUseCase): SignUpViewModel{
+        return SignUpViewModel(signUpUseCase, signInUseCase)
     }
 }
