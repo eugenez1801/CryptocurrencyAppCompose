@@ -30,14 +30,18 @@ class MainActivity : ComponentActivity() {
             CryptocurrencyAppComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
+                    val viewModel = hiltViewModel<AuthViewModel>()
+
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.AuthScreen.route
+                        startDestination = if (viewModel.currentUser() == null)Screen.AuthScreen.route
+                        else Screen.CoinListScreen.route
                     ) {
                         composable(
                             route = Screen.CoinListScreen.route
                         ) {
                             val viewModel = hiltViewModel<CoinListViewModel>()
+
                             CoinListScreen(navController)
                         }
 
@@ -52,8 +56,7 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.AuthScreen.route
                         ) {
-                            val viewModel = hiltViewModel<AuthViewModel>()
-                            AuthScreen(navController)
+                            AuthScreen(navController, viewModel)
                         }
                     }
                 }

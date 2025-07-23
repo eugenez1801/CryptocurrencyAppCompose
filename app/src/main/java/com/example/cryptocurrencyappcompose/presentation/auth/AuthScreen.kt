@@ -33,6 +33,7 @@ fun AuthScreen(
     viewModel: AuthViewModel = viewModel()
 ) {
     //все для экранов Sign InUp
+    val nicknameText = viewModel.nicknameTextState.value
     val emailText = viewModel.emailTextState.value
     val passwordText = viewModel.passwordTextState.value
 
@@ -138,6 +139,10 @@ fun AuthScreen(
 
                 1 -> {
                     SignUpTab(
+                        nicknameText = nicknameText,
+                        onNicknameTextChange = { newText ->
+                            viewModel.nicknameTextState.value = newText
+                        },
                         emailText = emailText,
                         onEmailTextChange = { newText ->
                             viewModel.emailTextState.value = newText

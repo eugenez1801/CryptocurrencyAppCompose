@@ -23,6 +23,8 @@ import com.example.cryptocurrencyappcompose.R
 
 @Composable
 fun SignUpTab(
+    nicknameText: String,
+    onNicknameTextChange: (String) -> Unit,
     emailText: String,
     onEmailTextChange: (String) -> Unit,
     passwordText: String,
@@ -37,6 +39,23 @@ fun SignUpTab(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
+        TextField(
+            value = nicknameText,
+            onValueChange = {
+                onNicknameTextChange(it)
+            },
+            label = {
+                Text(text = "Your nickname in app")
+            },
+            placeholder = {
+                Text(text = "Your nickname in app")
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+        )
+
+        Spacer(Modifier.height(10.dp))
+
         TextField(
             value = emailText,
             onValueChange = {

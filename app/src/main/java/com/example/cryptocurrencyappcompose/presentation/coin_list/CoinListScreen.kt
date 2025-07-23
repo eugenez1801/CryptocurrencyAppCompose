@@ -1,5 +1,7 @@
 package com.example.cryptocurrencyappcompose.presentation.coin_list
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -18,7 +21,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -47,9 +50,19 @@ fun CoinListScreen(
     val searchStatusBar = viewModel.searchStatusBarState.value
 
 //    val snackbarHost = viewModel.snackbarHostState.value
-//    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     val backToStart = viewModel.backToStartState.value
+
+    val context = LocalContext.current
+    val currentUser = viewModel.currentUser.value
+    LaunchedEffect(currentUser) {
+//        Log.d("CurrentUserCheck", "CoinListScreen: ${currentUser?.displayName} $currentUser")
+        if (currentUser != null){
+            Toast.makeText(context, "Hello, ${viewModel.currentUser.value?.displayName}",
+                Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         Column() {
@@ -77,6 +90,24 @@ fun CoinListScreen(
                         .align(Alignment.CenterVertically)
                         .padding(end = 10.dp, top = 5.dp)
                 ){
+                    IconButton(
+                        onClick = {
+//                            Log.d("RefreshCheck", "Refresh нажат")
+                            scope.launch {
+                                viewModel.signOut()
+                                navController.navigate(Screen.AuthScreen.route)
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "refresh",
+                            modifier = Modifier.size(50.dp)
+                        )
+                    }
+
                     IconButton(
                         onClick = {
 //                            Log.d("RefreshCheck", "Refresh нажат")

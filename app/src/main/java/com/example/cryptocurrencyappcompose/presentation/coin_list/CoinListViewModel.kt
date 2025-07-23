@@ -8,9 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencyappcompose.common.Resource
 import com.example.cryptocurrencyappcompose.common.SearchType
 import com.example.cryptocurrencyappcompose.domain.model.Coin
+import com.example.cryptocurrencyappcompose.domain.use_case.auth.GetCurrentUserUseCase
+import com.example.cryptocurrencyappcompose.domain.use_case.auth.SignOutUserUseCase
 import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.GetCoinsUseCase
 import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.ResultGetCoinsUseCase
+import com.example.cryptocurrencyappcompose.presentation.auth.AuthState
 import com.example.cryptocurrencyappcompose.presentation.coin_list.dialogs.SearchStatusBar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,7 +23,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
-    private val getCoinsUseCase: GetCoinsUseCase
+    private val getCoinsUseCase: GetCoinsUseCase,
+//    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val signOutUserUseCase: SignOutUserUseCase,
+    private val auth: FirebaseAuth
 ): ViewModel() {
 
     private val _state = mutableStateOf(CoinListState())//оно приватное и изменяемое, чтобы его изменять могла только вьюмодель
@@ -43,8 +51,21 @@ class CoinListViewModel @Inject constructor(
 
     val focusRequesterState = FocusRequester()
 
+    val currentUser = mutableStateOf<FirebaseUser?>(auth.currentUser)
+    /*fun currentUser(): FirebaseUser? {
+        return getCurrentUserUseCase()
+    }*/
+
+    suspend fun signOut(): AuthState {
+//        currentUser() = null
+        return signOutUserUseCase()
+    }
+
     init {
         getCoins()
+        auth.addAuthStateListener { firebaseAuth ->
+            currentUser.value = firebaseAuth.currentUser
+        }
     }
 
     fun getCoins(request: String? = null){
