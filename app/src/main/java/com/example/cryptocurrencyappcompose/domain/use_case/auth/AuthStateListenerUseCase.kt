@@ -1,6 +1,5 @@
 package com.example.cryptocurrencyappcompose.domain.use_case.auth
 
-import com.example.cryptocurrencyappcompose.domain.repository.FirebaseRepository
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
@@ -12,4 +11,4 @@ class AuthStateListenerUseCase @Inject constructor(
 
         }
     }
-}//надо внедрить для красоты
+}

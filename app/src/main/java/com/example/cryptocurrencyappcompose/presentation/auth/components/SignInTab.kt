@@ -56,7 +56,6 @@ fun SignInTab(
 
         TextField(
             value = passwordText,
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
             onValueChange = {
                 onPasswordTextChange(it)
             },

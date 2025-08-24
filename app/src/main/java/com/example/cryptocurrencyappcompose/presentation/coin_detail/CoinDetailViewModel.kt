@@ -19,10 +19,10 @@ class CoinDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val _state = mutableStateOf(CoinDetailState())//оно приватное и изменяемое, чтобы его изменять могла только вьюмодель
-    val state: State<CoinDetailState> = _state//он же открыт для composable, которые не могут его изменять, поскольку это не MutableState
+    private val _state = mutableStateOf(CoinDetailState())
+    val state: State<CoinDetailState> = _state
 
-    lateinit var coinIdForTrying: String//нужен чисто для повторного запроса у API, когда инет отрубится
+    lateinit var coinIdForTrying: String//нужен чисто для повторного запроса у API, когда инет пропадет
 
     init {
         savedStateHandle.get<String>(Constants.PARAM_COIN_ID)?.let { coinId ->
@@ -38,7 +38,6 @@ class CoinDetailViewModel @Inject constructor(
                     _state.value = CoinDetailState(
                         coin = result.data
                     )
-//                    Log.d("LogoCheck", state.value.toString())
                 }
                 is Resource.Error -> {
                     _state.value = CoinDetailState(

@@ -18,50 +18,40 @@ class GetCoinsUseCase @Inject constructor(
     operator fun invoke(request: String? = null, searchType: SearchType? = null, loadedList:
     List<Coin>? = null, needRefresh: Boolean = false): Flow<Resource<ResultGetCoinsUseCase>> = flow {
         try {
-//            Log.d("RefreshCheck", "Use case начался: request = $request," +
-//                    "searchType = $searchType, loadedList = $loadedList, needRefresh = $needRefresh")
             emit(Resource.Loading())
             var listOfCoins: List<Coin>? = null
 
             if (needRefresh){
-//                Log.d("RefreshCheck", "Первый If сработал. Обращение к репозиторию")
                 listOfCoins = repository.getCoins().map { it.toCoin() }
                 if (request == null){
-//                    Log.d("RefreshCheck", "request == null")
                     emit(Resource.Success(ResultGetCoinsUseCase(listOfCoins, refreshedListCoins = listOfCoins)))
                 }
 
                 else if (request != null){
-//                    Log.d("RefreshCheck", "Второй If сработал")
                     emit(Resource.Success(filterForSearch(request, searchType!!, listOfCoins, true)))
                 }
             }
 
-            else if (loadedList == null && request == null){ //по хорошему это должно быть вызвано один раз
-//                Log.d("LoadedListCheck", "Обращение к репозиторию. Первый if")
+            else if (loadedList == null && request == null){
                 listOfCoins = repository.getCoins().map { it.toCoin() }
 
                 emit(Resource.Success(ResultGetCoinsUseCase(listOfCoins)))
             }
 
             else if (request != null && loadedList != null){//обычный запрос поиска
-//                Log.d("LoadedListCheck", "Второй if")
                 emit(Resource.Success(filterForSearch(request, searchType!!, loadedList)))
             }
 
             else if (request != null && loadedList == null){
-//                Log.d("LoadedListCheck", "Третий if")
                 listOfCoins = repository.getCoins().map { it.toCoin() }
                 emit(Resource.Success(filterForSearch(request, searchType!!, listOfCoins)))
             }
 
             else if (request == null && loadedList != null){//чисто для случая при backToStartState == true
-//                Log.d("LoadedListCheck", "Четвертый if")
                 emit(Resource.Success(ResultGetCoinsUseCase(listCoins = loadedList)))
             }
 
             else if (listOfCoins != null) {//самая первая загрузка
-//                Log.d("LoadedListCheck", "Шестой if")
                 emit(Resource.Success(ResultGetCoinsUseCase(listOfCoins)))
             }
         } catch (e: HttpException) {
@@ -73,25 +63,12 @@ class GetCoinsUseCase @Inject constructor(
         }
     }
 
-    /*private fun coinDtoToCoin(listDto: List<CoinDto>): ResultGetCoinsUseCase{
-        return ResultGetCoinsUseCase(
-            listDto.map {
-                it.toCoin()
-            }
-        )
-    }*/
-
     private fun filterForSearch(stringForSearch: String, typeOfSearchType: SearchType, listCoin: List<Coin>,
                                 needRefreshedList: Boolean = false): ResultGetCoinsUseCase{
-//        Log.d("EmptyField", "Before throw")
-//        if (stringForSearch.isBlank()) throw ResultListException("The search field should not be empty.")
-//        Log.d("EmptyField", "After throw")
-
         val startWithList: MutableList<Coin> = mutableListOf()//список для коинов, начинающихся с этих букв
         val filteredList: MutableList<Coin> = mutableListOf()
-        var accurateCoin: Coin? = null //для точного попадания
-        val lowerStringForSearch = stringForSearch.lowercase().trim()//нижнее не учитывает пробелы в начале
-//        if (lowerStringForSearch.last() == ' ') lowerStringForSearch = lowerStringForSearch.dropLast(1)
+        var accurateCoin: Coin? = null //для точного совпадения
+        val lowerStringForSearch = stringForSearch.lowercase().trim()
 
         when(typeOfSearchType){
             SearchType.NAME -> listCoin.forEach { coinDto ->
@@ -112,10 +89,8 @@ class GetCoinsUseCase @Inject constructor(
             }
         }
 
-//        Log.d("SearchCheck", "$startWithList")
         var refreshedListForResult = emptyList<Coin>()
         if (needRefreshedList) refreshedListForResult = listCoin
-//        Log.d("LoadedListCheck", "refreshedListForResult = ${refreshedListForResult.size}")
         val listResult: List<Coin>
         if (accurateCoin != null) {
             listResult = listOf(accurateCoin!!) + startWithList + filteredList

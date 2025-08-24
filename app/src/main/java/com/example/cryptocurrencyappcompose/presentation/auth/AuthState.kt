@@ -1,8 +1,7 @@
 package com.example.cryptocurrencyappcompose.presentation.auth
 
-sealed class AuthState {//заменять на data class не нужно, поскольку требуются синглтоны
+sealed class AuthState {
     object Authenticated : AuthState()
     object Unauthenticated : AuthState()
-    //object Loading : AuthState()
     class Error(val message: String) : AuthState()
 }

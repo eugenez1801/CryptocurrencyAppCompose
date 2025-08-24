@@ -77,7 +77,6 @@ fun SignUpTab(
 
         TextField(
             value = passwordText,
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
             onValueChange = {
                 onPasswordTextChange(it)
             },
@@ -122,57 +121,5 @@ fun SignUpTab(
                 text = "Sign Up"
             )
         }
-
-        /*Box(при таком подходе возникает эффект нажатия ненужный и неуместный
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-        ) {
-            TextButton(
-                onClick = {
-                    navController.navigate(Screen.SignInScreen.route)
-                },
-                modifier = Modifier
-                    .height(30.dp),
-                contentPadding = PaddingValues(
-                    horizontal = 4.dp,
-                    vertical = 0.dp
-                )
-            ) {
-                Text(
-                    text = "Already have an account? Sign in",
-                )
-            }
-        }*/
-
-        /*Box( как вариант
-            Modifier.fillMaxWidth(0.7f)
-        ){
-            Box(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ){
-                        navController.navigate(Screen.SignInScreen.route)
-                    }
-            .padding(top = 5.dp, bottom = 5.dp, end = 2.dp)
-            ){
-                Row(
-
-                ){
-                    Text(
-                        text = "Already have an account?",
-                        fontSize = 14.sp
-                    )
-
-                    Text(
-                        text = " Sign in",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        }*/
     }
 }

@@ -34,7 +34,6 @@ fun AuthScreen(
     navController: NavController,
     viewModel: AuthViewModel = viewModel()
 ) {
-    //все для экранов Sign InUp
     val nicknameText = viewModel.nicknameTextState.value
     val emailText = viewModel.emailTextState.value
     val passwordText = viewModel.passwordTextState.value
@@ -145,9 +144,6 @@ fun AuthScreen(
                                         }
                                     }
                                 }
-                                /*navigateToSignUp = {
-                                    navController.navigate(Screen.SignUpScreen.route)
-                                }*/
                             )
                         }
 
@@ -197,9 +193,6 @@ fun AuthScreen(
                                         }
                                     }
                                 }
-                                /*navigateToSignIn = {
-                                    navController.navigate(Screen.SignInScreen.route)
-                                }*/
                             )
                         }
                     }

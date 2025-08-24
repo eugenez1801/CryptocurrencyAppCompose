@@ -77,8 +77,7 @@ fun CoinDetailScreen(
                             contentDescription = "logo",
                             modifier = Modifier
                                 .size(128.dp)
-                                .align(Alignment.Center)
-                                /*.background(Color.White)все таки лучше без него*/,
+                                .align(Alignment.Center),
                             contentScale = ContentScale.Crop
                         )
                     }
@@ -99,7 +98,7 @@ fun CoinDetailScreen(
                         Spacer(Modifier.height(15.dp))
                         FlowRow(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(7.dp)/*SpaceAround*/,
+                            horizontalArrangement = Arrangement.spacedBy(7.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             coin.tags.forEach{ tag ->

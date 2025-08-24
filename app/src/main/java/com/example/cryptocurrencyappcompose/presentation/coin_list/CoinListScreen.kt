@@ -1,6 +1,5 @@
 package com.example.cryptocurrencyappcompose.presentation.coin_list
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,7 +48,6 @@ fun CoinListScreen(
 
     val searchStatusBar = viewModel.searchStatusBarState.value
 
-//    val snackbarHost = viewModel.snackbarHostState.value
     val scope = rememberCoroutineScope()
 
     val backToStart = viewModel.backToStartState.value
@@ -58,7 +56,6 @@ fun CoinListScreen(
     val currentUser = viewModel.currentUser.value
     val isGreetingShown = viewModel.isGreetingShown.value
     LaunchedEffect(currentUser) {
-//        Log.d("CurrentUserCheck", "CoinListScreen: ${currentUser?.displayName} $currentUser")
         if (currentUser != null && !isGreetingShown){
             Toast.makeText(context, "Hello, ${viewModel.currentUser.value?.displayName}",
                 Toast.LENGTH_SHORT).show()
@@ -85,7 +82,7 @@ fun CoinListScreen(
                             text = "Type search: ${searchStatusBar.searchType.toString()}"
                         )
                     }
-                }else Spacer(modifier = Modifier.weight(1f))//идеально чтобы прижать иконки вправо
+                }else Spacer(modifier = Modifier.weight(1f))
 
                 Row(
                     modifier = Modifier
@@ -94,11 +91,9 @@ fun CoinListScreen(
                 ){
                     IconButton(
                         onClick = {
-//                            Log.d("RefreshCheck", "Refresh нажат")
                             scope.launch {
                                 viewModel.signOut()
                                 navController.navigate(Screen.AuthScreen.route)
-//                                Log.d("TroubleUser", "CoinListScreen: currentUser = ${currentUser}")
                             }
                         },
                         modifier = Modifier
@@ -113,7 +108,6 @@ fun CoinListScreen(
 
                     IconButton(
                         onClick = {
-//                            Log.d("RefreshCheck", "Refresh нажат")
                             viewModel.getCoinsAfterRefresh(searchStatusBar.enteredText)
                         },
                         modifier = Modifier
@@ -144,18 +138,12 @@ fun CoinListScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.90f)
                     .align(Alignment.CenterHorizontally))
-                    /*.padding(bottom = 7.dp, top = 7.dp)) Лучше сделать Spacer, поскольку при
-                    * пролистывании эти 7dp снизу перекрывают контент*/
-//            Spacer(Modifier.height(7.dp)) то же самое, что и с паддингом. Стоит либо добавить Item либо padding самому Column
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = if (backToStart) 40.dp else 0.dp),
             ) {
-                /*item {
-                    Spacer(Modifier.height(4.dp))больше не нужен, так как подредачил центровку в CoinListItem
-                }*/
                 items(state.result.listCoins.size) { coinId ->
                     CoinListItem(
                         coin = state.result.listCoins[coinId],
@@ -247,11 +235,6 @@ fun CoinListScreen(
             }
         }
 
-        /*SnackbarHost(
-            hostState = snackbarHost,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )*/
-
         if (showSearchDialog){
             SearchDialog(
                 showAlertDialog = viewModel.showSearchDialog,
@@ -278,8 +261,7 @@ fun CoinListScreen(
                 )
 
                 if (state.error == "Result list is empty." ||
-                    state.error == "The search field should not be empty.")/*не лучший вариант, следовало бы
-                отдельный класс определить для типа ошибки. Либо же изменить CoinListState, добавив тип туда помимо сообщения*/
+                    state.error == "The search field should not be empty.")
                 {
                     TextButton(
                         onClick = {
@@ -316,19 +298,6 @@ fun CoinListScreen(
                 }
             }
         }
-
-        /*LaunchedEffect(state) {
-//            Log.d("EmptyField", "Launched called")
-            if (state.error == "The search field should not be empty."){
-//                Log.d("EmptyField", "if called")
-                scope.launch {
-//                    Log.d("EmptyField", "scope called")
-                    snackbarHost.showSnackbar(
-                        message = state.error
-                    )
-                }
-            }
-        }*/
 
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

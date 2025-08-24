@@ -30,24 +30,14 @@ fun SearchDialog(
     viewModel: CoinListViewModel = viewModel()
 ) {
     val text = viewModel.textInTextFieldState.value
-//    Log.d("TextProblem", "Text: ${text} ")
     val currentSearchType = viewModel.currentSearchTypeState.value
 
     val focusRequester = viewModel.focusRequesterState//для установки фокуса на текстФилд
 
     val context = LocalContext.current
 
-    /*if (showAlertDialog.value) { это работает благодаря delay, но как то ненадежно, не хочу так
-        LaunchedEffect(showAlertDialog.value) {
-            // Ждем следующего кадра, чтобы TextField успел привязаться к FocusRequester
-            delay(50) // Минимальная задержка (можно убрать, если не помогает)
-            focusRequester.requestFocus()
-        }
-    }*/
-
     LaunchedEffect(Unit) {
-//        viewModel.updateDialogsState("") при повороте экрана все тоже сбрасывается
-        kotlinx.coroutines.delay(5)//все же нужен этот костыль
+        kotlinx.coroutines.delay(5)
         focusRequester.requestFocus()
     }
 
@@ -83,10 +73,7 @@ fun SearchDialog(
                 TextField(
                     value = text,
                     onValueChange = { newText ->
-//                        Log.d("TextProblem", "New text: $newText")
-                        if (/*newText из-за этого была ошибка*/text.length <= 28) viewModel.textInTextFieldState.value = newText/*проблема
-                        с отображением при максимальной длине строки*/
-//                        viewModel.updateDialogsState(newText.take(28)) не помогло
+                        if (text.length <= 28) viewModel.textInTextFieldState.value = newText
                     },
                     modifier = Modifier.focusRequester(focusRequester),
                     singleLine = true
@@ -100,7 +87,6 @@ fun SearchDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-//                    Log.d("TextProblem", text)
                     if (text.trim().isBlank()){
                         Toast.makeText(context, "The search field should not be empty",
                             Toast.LENGTH_SHORT).show()

@@ -8,7 +8,7 @@ data class CoinDto(
     val name: String,
     val symbol: String,
     val rank: Int,
-    @SerializedName("is_new")//тут указывается из json переменная
+    @SerializedName("is_new")
     val isNew: Boolean,
     @SerializedName("is_active")
     val isActive: Boolean,
@@ -17,7 +17,7 @@ data class CoinDto(
 
 fun CoinDto.toCoin(): Coin {
     return Coin(
-        id = /*this. необязательно*/id,
+        id = id,
         name = name,
         symbol = symbol,
         rank = rank,

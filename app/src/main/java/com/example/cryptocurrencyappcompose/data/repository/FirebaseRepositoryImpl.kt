@@ -19,8 +19,7 @@ class FirebaseRepositoryImpl @Inject constructor(
             result.user?.updateProfile(userProfileChangeRequest {
                 displayName = nickname
                 photoUri = null
-            })?.await()//чтобы displayName успело записаться, то есть целиком сработал updateProfile
-            //без await работало неправильно и там создавался пользователь, но без displayName
+            })?.await()
             AuthState.Authenticated
         }
         catch (e: Exception){

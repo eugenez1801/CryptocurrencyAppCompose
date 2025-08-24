@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencyappcompose.common.Resource
 import com.example.cryptocurrencyappcompose.common.SearchType
 import com.example.cryptocurrencyappcompose.domain.model.Coin
-import com.example.cryptocurrencyappcompose.domain.use_case.auth.GetCurrentUserUseCase
 import com.example.cryptocurrencyappcompose.domain.use_case.auth.SignOutUserUseCase
 import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.GetCoinsUseCase
 import com.example.cryptocurrencyappcompose.domain.use_case.get_coins.ResultGetCoinsUseCase
@@ -24,25 +23,21 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
     private val getCoinsUseCase: GetCoinsUseCase,
-//    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val signOutUserUseCase: SignOutUserUseCase,
     private val auth: FirebaseAuth
 ): ViewModel() {
 
-    private val _state = mutableStateOf(CoinListState())//оно приватное и изменяемое, чтобы его изменять могла только вьюмодель
-    val state: State<CoinListState> = _state//он же открыт для composable, которые не могут его изменять, поскольку это не MutableState
+    private val _state = mutableStateOf(CoinListState())
+    val state: State<CoinListState> = _state
 
     val showSearchDialog = mutableStateOf(false)
 
     val searchStatusBarState = mutableStateOf(SearchStatusBar())//для сохранения после поворота
 
-//    val snackbarHostState = mutableStateOf(SnackbarHostState())
-
     val backToStartState = mutableStateOf(false)
 
     val loadedListOfCoins = mutableStateOf<List<Coin>?>(null)
 
-//    val needRefreshState = mutableStateOf(true)
 
     //для диалога состояния
     val textInTextFieldState = mutableStateOf("")
@@ -51,17 +46,14 @@ class CoinListViewModel @Inject constructor(
 
     val focusRequesterState = FocusRequester()
 
+
     val isGreetingShown = mutableStateOf(false)
     fun isGreeting(){
         isGreetingShown.value = true
     }
     val currentUser = mutableStateOf<FirebaseUser?>(auth.currentUser)
-    /*fun currentUser(): FirebaseUser? {
-        return getCurrentUserUseCase()
-    }*/
 
     suspend fun signOut(): AuthState {
-//        currentUser() = null
         return signOutUserUseCase()
     }
 
@@ -79,19 +71,15 @@ class CoinListViewModel @Inject constructor(
             searchStatusBarState.value = SearchStatusBar()//прячем этот бар после нажатия возврата к начальному списку
         }
 
-//        Log.d("LoadedListCheck", "getCoinsUseCase вызван: request = $request," +
-//                " loadedList = ${loadedListOfCoins.value?.size}")
         getCoinsUseCase(request, searchStatusBarState.value.searchType,
             loadedListOfCoins.value).onEach { result ->
             when(result){
                 is Resource.Success -> {
-//                    Log.d("LoadedListCheck", "Success")
                     _state.value = CoinListState(
                         result = result.data ?: ResultGetCoinsUseCase()
                     )
                     if (loadedListOfCoins.value.isNullOrEmpty()) loadedListOfCoins.value =
                         result.data?.listCoins
-//                    Log.d("LoadedListCheck", "List: ${loadedListOfCoins.value?.size}")
                 }
                 is Resource.Error -> {
                     _state.value = CoinListState(
@@ -108,27 +96,21 @@ class CoinListViewModel @Inject constructor(
     }
 
     fun getCoinsAfterRefresh(request: String? = null){
-//        Log.d("RefreshCheck", "getCoinsAfterRefresh вызван: request = $request")
         if (request != null) backToStartState.value = true
         else {
             backToStartState.value = false
             searchStatusBarState.value = SearchStatusBar()//прячем этот бар после нажатия возврата к начальному списку
         }
-//        Log.d("InternetCheck", "getCoinsUseCase вызван из getCoinsAfterRefresh")
         getCoinsUseCase(
             request = request,
             searchType = searchStatusBarState.value.searchType,
             needRefresh = true
         ).onEach { result ->
-//            Log.d("InternetCheck", "result: ${result}")
-//            Log.d("RefreshCheck", "Result получен")
             when(result){
                 is Resource.Success -> {
                     _state.value = CoinListState(
                         result = result.data!!
                     )
-//                    Log.d("RefreshCheck", "Успешный getCoinsAfterRefresh")
-//                    Log.d("LoadedListCheck", "Loaded list from refresh = ${result.data.refreshedListCoins.size}")
                     loadedListOfCoins.value = result.data.refreshedListCoins
                     if (request != null) backToStartState.value = true//возвращаем кнопку после Loading
                 }
@@ -161,7 +143,7 @@ class CoinListViewModel @Inject constructor(
         showSearchDialog.value = true
     }
 
-    fun updateDialogsState(text: String? = null, searchType: SearchType? = null){//метод чисто для диалога
+    fun updateDialogsState(text: String? = null, searchType: SearchType? = null){
         if (text != null){
             textInTextFieldState.value = text
         }
