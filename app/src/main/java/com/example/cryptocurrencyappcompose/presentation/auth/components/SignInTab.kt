@@ -47,6 +47,7 @@ fun SignInTab(
             placeholder = {
                 Text(text = "Your email")
             },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         )
@@ -81,6 +82,7 @@ fun SignInTab(
                     )
                 }
             },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         )

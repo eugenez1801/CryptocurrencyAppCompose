@@ -16,7 +16,7 @@ class GetCoinsUseCase @Inject constructor(
 ) {
 
     operator fun invoke(request: String? = null, searchType: SearchType? = null, loadedList:
-    List<Coin>? = null, needRefresh: Boolean = false,): Flow<Resource<ResultGetCoinsUseCase>> = flow {
+    List<Coin>? = null, needRefresh: Boolean = false): Flow<Resource<ResultGetCoinsUseCase>> = flow {
         try {
 //            Log.d("RefreshCheck", "Use case начался: request = $request," +
 //                    "searchType = $searchType, loadedList = $loadedList, needRefresh = $needRefresh")

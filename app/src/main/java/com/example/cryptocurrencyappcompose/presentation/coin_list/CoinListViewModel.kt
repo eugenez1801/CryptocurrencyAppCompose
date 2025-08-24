@@ -51,6 +51,10 @@ class CoinListViewModel @Inject constructor(
 
     val focusRequesterState = FocusRequester()
 
+    val isGreetingShown = mutableStateOf(false)
+    fun isGreeting(){
+        isGreetingShown.value = true
+    }
     val currentUser = mutableStateOf<FirebaseUser?>(auth.currentUser)
     /*fun currentUser(): FirebaseUser? {
         return getCurrentUserUseCase()

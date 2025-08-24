@@ -1,6 +1,7 @@
 package com.example.cryptocurrencyappcompose.presentation.auth
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -52,141 +54,161 @@ fun AuthScreen(
     )
     val tabIndex = pagerState.currentPage
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Spacer(Modifier
-            .weight(1f))
-        TabRow(
-            selectedTabIndex = tabIndex,
-            indicator = { pos ->
-                SecondaryIndicator(
-                    modifier = Modifier
-                        .tabIndicatorOffset(currentTabPosition = pos[tabIndex]),
-                    color = MaterialTheme.colorScheme.primary
+    val isLoading = viewModel.isLoadingState.value
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ){
+        if (!isLoading){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+            ) {
+                Spacer(
+                    Modifier
+                        .weight(1f)
                 )
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            tabList.forEachIndexed { index, text ->
-                Tab(
-                    selected = false,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
+                TabRow(
+                    selectedTabIndex = tabIndex,
+                    indicator = { pos ->
+                        SecondaryIndicator(
+                            modifier = Modifier
+                                .tabIndicatorOffset(currentTabPosition = pos[tabIndex]),
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     },
-                    text = {
-                        Text(text = text)
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    tabList.forEachIndexed { index, text ->
+                        Tab(
+                            selected = false,
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
+                            text = {
+                                Text(text = text)
+                            }
+                        )
                     }
-                )
+                }
+
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .weight(2f, fill = true)
+                        .padding(top = 15.dp)
+                ) { index ->
+                    when (index) {
+                        0 -> {
+                            SignInTab(
+                                emailText = emailLoginText,
+                                onEmailTextChange = { newText ->
+                                    viewModel.emailLoginTextState.value = newText
+                                },
+                                passwordText = passwordLoginText,
+                                onPasswordTextChange = { newText ->
+                                    viewModel.passwordLoginTextState.value = newText
+                                },
+                                isPasswordShown = isPasswordShown,
+                                onIsPasswordShownChange = {
+                                    viewModel.isPasswordShownState.value =
+                                        !viewModel.isPasswordShownState.value
+                                },
+                                onLoginClick = {
+                                    scope.launch {
+                                        when (val resultSignIn = viewModel.loginUser()) {
+                                            is AuthState.Authenticated -> {
+                                                navController.navigate(Screen.CoinListScreen.route) {
+                                                    popUpTo(Screen.AuthScreen.route) {
+                                                        inclusive = true
+                                                    }
+                                                }
+                                            }
+
+                                            is AuthState.Error -> {
+                                                Toast.makeText(
+                                                    context, resultSignIn.message,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+
+                                            else -> {
+                                                Toast.makeText(
+                                                    context, "Unexpected error",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                }
+                                /*navigateToSignUp = {
+                                    navController.navigate(Screen.SignUpScreen.route)
+                                }*/
+                            )
+                        }
+
+                        1 -> {
+                            SignUpTab(
+                                nicknameText = nicknameText,
+                                onNicknameTextChange = { newText ->
+                                    viewModel.nicknameTextState.value = newText
+                                },
+                                emailText = emailText,
+                                onEmailTextChange = { newText ->
+                                    viewModel.emailTextState.value = newText
+                                },
+                                passwordText = passwordText,
+                                onPasswordTextChange = { newText ->
+                                    viewModel.passwordTextState.value = newText
+                                },
+                                isPasswordShown = isPasswordShown,
+                                onIsPasswordShownChange = {
+                                    viewModel.isPasswordShownState.value =
+                                        !viewModel.isPasswordShownState.value
+                                },
+                                onSignUpClick = {
+                                    scope.launch {
+                                        when (val resultSignUp = viewModel.registerNewUser()) {
+                                            is AuthState.Authenticated -> {
+                                                navController.navigate(Screen.CoinListScreen.route) {
+                                                    popUpTo(Screen.AuthScreen.route) {
+                                                        inclusive = true
+                                                    }
+                                                }
+                                            }
+
+                                            is AuthState.Error -> {
+                                                Toast.makeText(
+                                                    context, resultSignUp.message,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+
+                                            else -> {
+                                                Toast.makeText(
+                                                    context, "Unexpected error",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                    }
+                                }
+                                /*navigateToSignIn = {
+                                    navController.navigate(Screen.SignInScreen.route)
+                                }*/
+                            )
+                        }
+                    }
+                }
             }
         }
-
-        HorizontalPager(
-            state = pagerState,
+        else CircularProgressIndicator(
             modifier = Modifier
-                .weight(2f, fill = true)
-                .padding(top = 15.dp)
-        ) { index ->
-            when (index) {
-                0 -> {
-                    SignInTab(
-                        emailText = emailLoginText,
-                        onEmailTextChange = { newText ->
-                            viewModel.emailLoginTextState.value = newText
-                        },
-                        passwordText = passwordLoginText,
-                        onPasswordTextChange = { newText ->
-                            viewModel.passwordLoginTextState.value = newText
-                        },
-                        isPasswordShown = isPasswordShown,
-                        onIsPasswordShownChange = {
-                            viewModel.isPasswordShownState.value =
-                                !viewModel.isPasswordShownState.value
-                        },
-                        onLoginClick = {
-                            scope.launch {
-                                when (val resultSignIn = viewModel.loginUser()) {
-                                    is AuthState.Authenticated -> {
-                                        navController.navigate(Screen.CoinListScreen.route)
-                                    }
-
-                                    is AuthState.Error -> {
-                                        Toast.makeText(
-                                            context, resultSignIn.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-                                    else -> {
-                                        Toast.makeText(
-                                            context, "Unexpected error",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        }
-                        /*navigateToSignUp = {
-                            navController.navigate(Screen.SignUpScreen.route)
-                        }*/
-                    )
-                }
-
-                1 -> {
-                    SignUpTab(
-                        nicknameText = nicknameText,
-                        onNicknameTextChange = { newText ->
-                            viewModel.nicknameTextState.value = newText
-                        },
-                        emailText = emailText,
-                        onEmailTextChange = { newText ->
-                            viewModel.emailTextState.value = newText
-                        },
-                        passwordText = passwordText,
-                        onPasswordTextChange = { newText ->
-                            viewModel.passwordTextState.value = newText
-                        },
-                        isPasswordShown = isPasswordShown,
-                        onIsPasswordShownChange = {
-                            viewModel.isPasswordShownState.value =
-                                !viewModel.isPasswordShownState.value
-                        },
-                        onSignUpClick = {
-                            scope.launch {
-                                when (val resultSignUp = viewModel.registerNewUser()) {
-                                    is AuthState.Authenticated -> {
-                                        navController.navigate(Screen.CoinListScreen.route)
-                                    }
-
-                                    is AuthState.Error -> {
-                                        Toast.makeText(
-                                            context, resultSignUp.message,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-                                    else -> {
-                                        Toast.makeText(
-                                            context, "Unexpected error",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-                            }
-                        }
-                        /*navigateToSignIn = {
-                            navController.navigate(Screen.SignInScreen.route)
-                        }*/
-                    )
-                }
-            }
-        }
-//        Spacer(modifier = Modifier
-//            .weight(1f))
+                .align(Alignment.Center)
+        )
     }
 }

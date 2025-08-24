@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -30,12 +31,10 @@ class MainActivity : ComponentActivity() {
             CryptocurrencyAppComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
-                    val viewModel = hiltViewModel<AuthViewModel>()
 
                     NavHost(
                         navController = navController,
-                        startDestination = if (viewModel.currentUser() == null)Screen.AuthScreen.route
-                        else Screen.CoinListScreen.route
+                        startDestination = Screen.AuthScreen.route
                     ) {
                         composable(
                             route = Screen.CoinListScreen.route
@@ -56,7 +55,18 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.AuthScreen.route
                         ) {
-                            AuthScreen(navController, viewModel)
+                            val viewModel = hiltViewModel<AuthViewModel>()
+                            if (viewModel.currentUser.value != null) {
+                                LaunchedEffect(Unit) {
+                                    navController.navigate(Screen.CoinListScreen.route){
+                                        popUpTo(Screen.AuthScreen.route){
+                                            inclusive = true
+                                        }
+                                    }
+//                                    viewModel.currentUser() = null
+                                }
+                            }
+                            else AuthScreen(navController, viewModel)
                         }
                     }
                 }

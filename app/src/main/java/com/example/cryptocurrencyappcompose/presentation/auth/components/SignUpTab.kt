@@ -50,6 +50,7 @@ fun SignUpTab(
             placeholder = {
                 Text(text = "Your nickname in app")
             },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         )
@@ -67,6 +68,7 @@ fun SignUpTab(
             placeholder = {
                 Text(text = "Your email")
             },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         )
@@ -101,6 +103,7 @@ fun SignUpTab(
                     )
                 }
             },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth(0.7f)
         )

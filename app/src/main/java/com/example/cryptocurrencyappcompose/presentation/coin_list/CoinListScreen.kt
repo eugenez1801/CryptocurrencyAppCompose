@@ -56,11 +56,13 @@ fun CoinListScreen(
 
     val context = LocalContext.current
     val currentUser = viewModel.currentUser.value
+    val isGreetingShown = viewModel.isGreetingShown.value
     LaunchedEffect(currentUser) {
 //        Log.d("CurrentUserCheck", "CoinListScreen: ${currentUser?.displayName} $currentUser")
-        if (currentUser != null){
+        if (currentUser != null && !isGreetingShown){
             Toast.makeText(context, "Hello, ${viewModel.currentUser.value?.displayName}",
                 Toast.LENGTH_SHORT).show()
+            viewModel.isGreeting()
         }
     }
 
@@ -96,6 +98,7 @@ fun CoinListScreen(
                             scope.launch {
                                 viewModel.signOut()
                                 navController.navigate(Screen.AuthScreen.route)
+//                                Log.d("TroubleUser", "CoinListScreen: currentUser = ${currentUser}")
                             }
                         },
                         modifier = Modifier
