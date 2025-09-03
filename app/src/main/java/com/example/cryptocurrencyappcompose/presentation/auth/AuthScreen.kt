@@ -17,6 +17,7 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +55,25 @@ fun AuthScreen(
     val tabIndex = pagerState.currentPage
 
     val isLoading = viewModel.isLoadingState.value
+
+    val navigateToScreenList = viewModel.navigateToScreenList.value
+
+    LaunchedEffect(navigateToScreenList) {
+        if (navigateToScreenList) {
+            navController.navigate(Screen.CoinListScreen.route) {
+                popUpTo(Screen.AuthScreen.route) {
+                    inclusive = true
+                }
+            }
+            //сбрасывать navigateToScreenList до false не нужно, тк VM все равно уничтожится
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.toastMessage.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -117,33 +137,7 @@ fun AuthScreen(
                                     viewModel.isPasswordShownState.value =
                                         !viewModel.isPasswordShownState.value
                                 },
-                                onLoginClick = {
-                                    scope.launch {
-                                        when (val resultSignIn = viewModel.loginUser()) {
-                                            is AuthState.Authenticated -> {
-                                                navController.navigate(Screen.CoinListScreen.route) {
-                                                    popUpTo(Screen.AuthScreen.route) {
-                                                        inclusive = true
-                                                    }
-                                                }
-                                            }
-
-                                            is AuthState.Error -> {
-                                                Toast.makeText(
-                                                    context, resultSignIn.message,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-
-                                            else -> {
-                                                Toast.makeText(
-                                                    context, "Unexpected error",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                    }
-                                }
+                                onLoginClick = { viewModel.loginUser() }
                             )
                         }
 
@@ -166,33 +160,7 @@ fun AuthScreen(
                                     viewModel.isPasswordShownState.value =
                                         !viewModel.isPasswordShownState.value
                                 },
-                                onSignUpClick = {
-                                    scope.launch {
-                                        when (val resultSignUp = viewModel.registerNewUser()) {
-                                            is AuthState.Authenticated -> {
-                                                navController.navigate(Screen.CoinListScreen.route) {
-                                                    popUpTo(Screen.AuthScreen.route) {
-                                                        inclusive = true
-                                                    }
-                                                }
-                                            }
-
-                                            is AuthState.Error -> {
-                                                Toast.makeText(
-                                                    context, resultSignUp.message,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-
-                                            else -> {
-                                                Toast.makeText(
-                                                    context, "Unexpected error",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                    }
-                                }
+                                onSignUpClick = { viewModel.registerNewUser() }
                             )
                         }
                     }

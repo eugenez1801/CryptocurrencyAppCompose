@@ -3,11 +3,15 @@ package com.example.cryptocurrencyappcompose.presentation.auth
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencyappcompose.domain.use_case.auth.SignInUseCase
 import com.example.cryptocurrencyappcompose.domain.use_case.auth.SignUpUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,23 +35,42 @@ class AuthViewModel @Inject constructor(
 
     val isLoadingState = mutableStateOf(false)
 
-    suspend fun registerNewUser(): AuthState{
-        isLoadingState.value = true
-        val res = signUpUseCase(nicknameTextState.value,emailTextState.value, passwordTextState.value)
-        when (res){
-            is AuthState.Authenticated -> {}//ничего не делаем
-            else -> {isLoadingState.value = false}//если ошибка то ставим else
+    val navigateToScreenList = mutableStateOf(false)
+
+    private val _toastMessage = MutableSharedFlow<String>()
+    val toastMessage = _toastMessage.asSharedFlow()
+
+    fun registerNewUser(){
+        viewModelScope.launch {
+            isLoadingState.value = true
+            val res = signUpUseCase(nicknameTextState.value,emailTextState.value, passwordTextState.value)
+            when (res){
+                is AuthState.Authenticated -> {
+                    navigateToScreenList.value = true
+                }
+                is AuthState.Error -> {
+                    isLoadingState.value = false
+                    _toastMessage.emit(res.message)
+                }
+                is AuthState.Unauthenticated -> {}
+            }
         }
-        return res
     }
 
-    suspend fun loginUser(): AuthState{
-        isLoadingState.value = true
-        val res = signInUseCase(emailLoginTextState.value, passwordLoginTextState.value)
-        when (res){
-            is AuthState.Authenticated -> {}//ничего не делаем
-            else -> {isLoadingState.value = false}//если ошибка то ставим else
+    fun loginUser(){
+        viewModelScope.launch {
+            isLoadingState.value = true
+            val res = signInUseCase(emailLoginTextState.value, passwordLoginTextState.value)
+            when (res){
+                is AuthState.Authenticated -> {
+                    navigateToScreenList.value = true
+                }
+                is AuthState.Error -> {
+                    isLoadingState.value = false
+                    _toastMessage.emit(res.message)
+                }
+                is AuthState.Unauthenticated -> {}
+            }
         }
-        return res
     }
 }
