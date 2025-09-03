@@ -1,4 +1,4 @@
-package com.example.cryptocurrencyappcompose.presentation.auth.components
+package com.example.cryptocurrencyappcompose.presentation.auth.components.SignUp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,11 +23,9 @@ import com.example.cryptocurrencyappcompose.R
 
 @Composable
 fun SignUpTab(
-    nicknameText: String,
+    state: SignUpTabState,
     onNicknameTextChange: (String) -> Unit,
-    emailText: String,
     onEmailTextChange: (String) -> Unit,
-    passwordText: String,
     onPasswordTextChange: (String) -> Unit,
     isPasswordShown: Boolean,
     onIsPasswordShownChange: () -> Unit,
@@ -40,7 +38,7 @@ fun SignUpTab(
         verticalArrangement = Arrangement.Top
     ) {
         TextField(
-            value = nicknameText,
+            value = state.nicknameText,
             onValueChange = {
                 onNicknameTextChange(it)
             },
@@ -58,7 +56,7 @@ fun SignUpTab(
         Spacer(Modifier.height(10.dp))
 
         TextField(
-            value = emailText,
+            value = state.emailText,
             onValueChange = {
                 onEmailTextChange(it)
             },
@@ -76,7 +74,7 @@ fun SignUpTab(
         Spacer(Modifier.height(10.dp))
 
         TextField(
-            value = passwordText,
+            value = state.passwordText,
             onValueChange = {
                 onPasswordTextChange(it)
             },

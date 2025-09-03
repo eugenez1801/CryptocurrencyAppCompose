@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cryptocurrencyappcompose.presentation.Screen
-import com.example.cryptocurrencyappcompose.presentation.auth.components.SignInTab
-import com.example.cryptocurrencyappcompose.presentation.auth.components.SignUpTab
+import com.example.cryptocurrencyappcompose.presentation.auth.components.SignIn.SignInTab
+import com.example.cryptocurrencyappcompose.presentation.auth.components.SignUp.SignUpTab
 import kotlinx.coroutines.launch
 
 @Composable
@@ -35,12 +35,9 @@ fun AuthScreen(
     navController: NavController,
     viewModel: AuthViewModel = viewModel()
 ) {
-    val nicknameText = viewModel.nicknameTextState.value
-    val emailText = viewModel.emailTextState.value
-    val passwordText = viewModel.passwordTextState.value
+    val signUpTabState = viewModel.stateSignUpTab.value
 
-    val emailLoginText = viewModel.emailLoginTextState.value
-    val passwordLoginText = viewModel.passwordLoginTextState.value
+    val signInTabState = viewModel.stateSignInTab.value
 
     val isPasswordShown = viewModel.isPasswordShownState.value
 
@@ -124,18 +121,16 @@ fun AuthScreen(
                     when (index) {
                         0 -> {
                             SignInTab(
-                                emailText = emailLoginText,
+                                state = signInTabState,
                                 onEmailTextChange = { newText ->
-                                    viewModel.emailLoginTextState.value = newText
+                                    viewModel.updateSignInEmail(newText)
                                 },
-                                passwordText = passwordLoginText,
                                 onPasswordTextChange = { newText ->
-                                    viewModel.passwordLoginTextState.value = newText
+                                    viewModel.updateSignInPassword(newText)
                                 },
                                 isPasswordShown = isPasswordShown,
                                 onIsPasswordShownChange = {
-                                    viewModel.isPasswordShownState.value =
-                                        !viewModel.isPasswordShownState.value
+                                    viewModel.changePasswordShownState()
                                 },
                                 onLoginClick = { viewModel.loginUser() }
                             )
@@ -143,22 +138,19 @@ fun AuthScreen(
 
                         1 -> {
                             SignUpTab(
-                                nicknameText = nicknameText,
+                                state = signUpTabState,
                                 onNicknameTextChange = { newText ->
-                                    viewModel.nicknameTextState.value = newText
+                                    viewModel.updateSignUpNickname(newText)
                                 },
-                                emailText = emailText,
                                 onEmailTextChange = { newText ->
-                                    viewModel.emailTextState.value = newText
+                                    viewModel.updateSignUpEmail(newText)
                                 },
-                                passwordText = passwordText,
                                 onPasswordTextChange = { newText ->
-                                    viewModel.passwordTextState.value = newText
+                                    viewModel.updateSignUpPassword(newText)
                                 },
                                 isPasswordShown = isPasswordShown,
                                 onIsPasswordShownChange = {
-                                    viewModel.isPasswordShownState.value =
-                                        !viewModel.isPasswordShownState.value
+                                    viewModel.changePasswordShownState()
                                 },
                                 onSignUpClick = { viewModel.registerNewUser() }
                             )
