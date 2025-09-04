@@ -1,7 +1,14 @@
 package com.example.cryptocurrencyappcompose.presentation
 
-sealed class Screen(val route: String) {
-    object CoinListScreen: Screen("coin_list_screen")
-    object CoinDetailScreen: Screen("coin_detail_screen")
-    object AuthScreen: Screen("auth_screen")
+import kotlinx.serialization.Serializable
+
+sealed class Screen() {
+    @Serializable
+    object AuthScreen: Screen()
+
+    @Serializable
+    object CoinListScreen: Screen()
+
+    @Serializable
+    data class CoinDetailScreen(val coinId: String): Screen()
 }

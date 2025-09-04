@@ -57,8 +57,8 @@ fun AuthScreen(
 
     LaunchedEffect(navigateToScreenList) {
         if (navigateToScreenList) {
-            navController.navigate(Screen.CoinListScreen.route) {
-                popUpTo(Screen.AuthScreen.route) {
+            navController.navigate(Screen.CoinListScreen) {
+                popUpTo(Screen.AuthScreen) {
                     inclusive = true
                 }
             }

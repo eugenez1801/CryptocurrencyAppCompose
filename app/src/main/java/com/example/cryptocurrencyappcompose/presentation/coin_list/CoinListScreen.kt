@@ -93,7 +93,7 @@ fun CoinListScreen(
                         onClick = {
                             scope.launch {
                                 viewModel.signOut()
-                                navController.navigate(Screen.AuthScreen.route)
+                                navController.navigate(Screen.AuthScreen)
                             }
                         },
                         modifier = Modifier
@@ -149,10 +149,9 @@ fun CoinListScreen(
                         coin = state.result.listCoins[coinId],
                         onItemClick = {
                             navController.navigate(
-                                Screen.CoinDetailScreen.route +
-                                        "/${state.result.listCoins[coinId].id}"
-                            )
-
+                                Screen.CoinDetailScreen(
+                                coinId = state.result.listCoins[coinId].id
+                            ))
                         },
                         isAccurateCoin = if (coinId == 0) state.result.accurateCoinExists
                         else false

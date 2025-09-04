@@ -92,26 +92,4 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-
-    /*fun updateSignTabsStates(typeOfTab: TypeOfTab, fieldOfTab: FieldOfTab, text: String){ избыточно выглядит
-        when(typeOfTab){
-            TypeOfTab.SIGN_UP -> {
-                when(fieldOfTab){
-                    FieldOfTab.NICKNAME -> {
-                        _stateSignUpTab.value = _stateSignUpTab.value.copy(nicknameText = text)
-                    }
-                    FieldOfTab.EMAIL -> {
-                        _stateSignUpTab.value = _stateSignUpTab.value.copy(emailText = text)
-                    }
-                    FieldOfTab.PASSWORD -> {
-                        _stateSignUpTab.value = _stateSignUpTab.value.copy(passwordText = text)
-                    }
-                }
-            }
-
-            TypeOfTab.SIGN_IN -> {
-
-            }
-        }
-    }*/
 }

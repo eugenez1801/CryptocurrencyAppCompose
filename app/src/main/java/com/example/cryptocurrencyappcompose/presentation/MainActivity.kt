@@ -39,33 +39,26 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.AuthScreen.route,
+                        startDestination = Screen.AuthScreen,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(
-                            route = Screen.CoinListScreen.route
-                        ) {
+                        composable<Screen.CoinListScreen>{
                             val viewModel = hiltViewModel<CoinListViewModel>()
 
                             CoinListScreen(navController)
                         }
 
-                        composable(
-                            route = Screen.CoinDetailScreen.route +
-                            "/{coinId}"
-                        ) {
+                        composable<Screen.CoinDetailScreen> {
                             val viewModel = hiltViewModel<CoinDetailViewModel>()
                             CoinDetailScreen()
                         }
 
-                        composable(
-                            route = Screen.AuthScreen.route
-                        ) {
+                        composable<Screen.AuthScreen> {
                             val viewModel = hiltViewModel<AuthViewModel>()
                             if (viewModel.currentUser.value != null) {
                                 LaunchedEffect(Unit) {
-                                    navController.navigate(Screen.CoinListScreen.route){
-                                        popUpTo(Screen.AuthScreen.route){
+                                    navController.navigate(Screen.CoinListScreen){
+                                        popUpTo(Screen.AuthScreen){
                                             inclusive = true
                                         }
                                     }
